@@ -34,6 +34,11 @@ add meta-rust to bblayers.conf
 bitbake rpi-hwup-image
 started in VM on MBP @14:00 end @20:30
 
+### Build bugs
+missing "bits/c++config.h": sudo apt-get install gcc-multilib g++-multilib
+nodejs compile error: remove nodejs, etc from bblayers.conf
+bitbake command not found: source oe-init-build-env
+
 ## Links and references
 
 https://www.yoctoproject.org/
