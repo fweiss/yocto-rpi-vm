@@ -32,7 +32,7 @@ cp ~/rpi/sources/meta-8bitrobots/example-config/local.conf conf/local.conf
 add meta-rust to bblayers.conf
 
 bitbake rpi-hwup-image
-started in VM on MBP @14:00
+started in VM on MBP @14:00 end @20:30
 
 ## Links and references
 
