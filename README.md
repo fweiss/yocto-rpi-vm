@@ -22,6 +22,28 @@ Vagrant bento/ubuntu
 ## Barebones
 https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/about/
 
+mkdir bare-source
+cd bare-source
+git clone -b thud git://git.yoctoproject.org/poky
+git clone -b thud git://git.openembedded.org/meta-openembedded
+git clone -b thud git://git.yoctoproject.org/meta-raspberrypi
+cd ..
+source bare-source/poky/oe-init-build-env bare-build
+vi conf/bblayers.conf
+vi conf/local.conf
+bitbake core-image-base
+
+### Files
+The cmdline.txt and conf.txt files are in ``~/bare-build/tmp/deploy/images/raspberrypi0/bcm2835-bootfiles``
+
+Produced a zimage file instead of kernel.img. LED flashes seven time, indicating missing kernel.img.
+
+Rename zImge to kernel.img gets console output, but cannot find the root fs.
+
+Comparing cmsdine.txt to working Jessie image, there's root=/dev/mmcblk0p2 instead of root=PARTUUID=03e791ca-02.
+
+Trying to add ROOT_VM = "root=PARTUUID=${DISK_SIGNATURE}-02" to conf/conf.txt
+
 ## New toolchain
 https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
 
