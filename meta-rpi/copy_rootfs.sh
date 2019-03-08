@@ -47,10 +47,10 @@ fi
 echo -e "HOSTNAME: $TARGET_HOSTNAME\n"
 
 
-if [ ! -f "${SRCDIR}/${IMAGE}-image-${MACHINE}.tar.xz" ]; then
-        echo "File not found: ${SRCDIR}/${IMAGE}-image-${MACHINE}.tar.xz"
-        exit 1
-fi
+#if [ ! -f "${SRCDIR}/${IMAGE}-image-${MACHINE}.tar.xz" ]; then
+#        echo "File not found: ${SRCDIR}/${IMAGE}-image-${MACHINE}.tar.xz"
+#        exit 1
+#fi
 
 if [ -b ${1} ]; then
 	DEV=${1}
@@ -84,7 +84,8 @@ if [ "$?" -ne 0 ]; then
 fi
 
 echo "Extracting ${IMAGE}-image-${MACHINE}.tar.xz to /media/card"
-sudo tar --numeric-owner -C /media/card -xJf ${SRCDIR}/${IMAGE}-image-${MACHINE}.tar.xz
+#sudo tar --numeric-owner -C /media/card -xJf ${SRCDIR}/${IMAGE}-image-${MACHINE}.tar.xz
+sudo tar --numeric-owner -C /media/card -xjf core-image-base-raspberrypi0.tar.bz2
 
 echo "Generating a random-seed for urandom"
 mkdir -p /media/card/var/lib/urandom

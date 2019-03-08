@@ -29,9 +29,17 @@ git clone -b thud git://git.openembedded.org/meta-openembedded
 git clone -b thud git://git.yoctoproject.org/meta-raspberrypi
 cd ..
 source bare-source/poky/oe-init-build-env bare-build
-vi conf/bblayers.conf
-vi conf/local.conf
+vi conf/bblayers.conf: ``cp /vagrant/conf/bblayers.conf conf``
+vi conf/local.conf: add ``MACHINE ?= "raspberrypi0"`` 
 bitbake core-image-base
+
+copy kernel and rootfs
+
+rename zImage
+
+In the /boot/cmdline.tx file add the following at the end after rootwait: ``modules-load=dwc2,g_ether``
+
+In the /boot/config.txt file, add the following at the end: ``dtoverlay=dwc2``
 
 ### Files
 The cmdline.txt and conf.txt files are in ``~/bare-build/tmp/deploy/images/raspberrypi0/bcm2835-bootfiles``
@@ -43,6 +51,8 @@ Rename zImge to kernel.img gets console output, but cannot find the root fs.
 Comparing cmsdine.txt to working Jessie image, there's root=/dev/mmcblk0p2 instead of root=PARTUUID=03e791ca-02.
 
 Trying to add ROOT_VM = "root=PARTUUID=${DISK_SIGNATURE}-02" to conf/conf.txt
+
+Solution: need to run modified meta-rpi/scriptsd/copy_roofs.sh
 
 ## New toolchain
 https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
@@ -169,3 +179,6 @@ https://www.yoctoproject.org/docs/2.6.1/brief-yoctoprojectqs/brief-yoctoprojectq
 https://blog.gbaman.info/?p=791 Ethernet over USB
 
 https://media.readthedocs.org/pdf/meta-raspberrypi/latest/meta-raspberrypi.pdf
+
+http://www.circuitbasics.com/raspberry-pi-zero-ethernet-gadget/
+
