@@ -182,3 +182,5 @@ https://media.readthedocs.org/pdf/meta-raspberrypi/latest/meta-raspberrypi.pdf
 
 http://www.circuitbasics.com/raspberry-pi-zero-ethernet-gadget/
 
+https://elinux.org/Bitbake_Cheat_Sheet
+
