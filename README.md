@@ -158,16 +158,16 @@ During the course of getting this to work, I learned the following:
 On a Mac, the following should be observed:
 
 - in System Preferences > Network, the RNDIS/Ethernet Gadget should have connected status and IP address
-- ping raspberryipo.local should resolve
-- ssh root@raspberryipi0.local should establish a shell on the RPI
+- ping raspberrypi0.local should resolve
+- ssh root@raspberrypi0.local should open a shell on the RPI
 
 ### RPI observations
 On the RPI, the following should be observed:
 
 - the avahi-daemon is running (two processes)
 - the dropbear damon is running (see note below)
-- the g_ether mod should appear in lsmod
-- the usb0 link should appear in ifconfig
+- the g_ether module should appear in lsmod (there are a few other associated ones, as well)
+- the usb0 network interfacew should appear in ifconfig
 
 ### dropbear ssh daemon
 The are two options on RPI for ssh service:
