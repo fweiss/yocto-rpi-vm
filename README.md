@@ -141,7 +141,43 @@ sudo mkdir /media/card
 
 ``source /vagrant/write_sd.sh``
 
-## USB/Ethernet Gadget configuration
+## SSHD/USB/Ethernet Gadget configuration
+One of the goals of this project is to be able to ssh into the RPI via a USB cable.
+The advantage of this over WiFi is that it requires no WiFi network nor access credentials.
+This would be especially useful in some demo situations, which may be hindered by lack of or 
+difficulty of establishing WiFi conenctivity.
+
+### Key points
+During the course of getting this to work, I learned the following:
+
+- the "ethernet gadget" package tunnels an IP link over USB
+- the avahi damon and Bonjour service provide an ad-hoc DNS lookup
+- the sshd is not configured by default
+
+### Mac observations
+On a Mac, the following should be observed:
+
+- in System Preferences > Network, the RNDIS/Ethernet Gadget should have connected status and IP address
+- ping raspberryipo.local should resolve
+- ssh root@raspberryipi0.local should establish a shell on the RPI
+
+### RPI observations
+On the RPI, the following should be observed:
+
+- the avahi-daemon is running (two processes)
+- the dropbear damon is running (see note below)
+- the g_ether mod should appear in lsmod
+- the usb0 link should appear in ifconfig
+
+### dropbear ssh daemon
+The are two options on RPI for ssh service:
+
+- dropbear
+- openssh
+
+Dropbear is a light-weight implementation.
+
+
 (need to add to recipe)
 
 In the /boot/cmdline.tx file add the following at the end after rootwait: ``modules-load=dwc2,g_ether``
