@@ -27,7 +27,7 @@ def main():
         check_kernel_image_file()
         print("starting write of image {}".format(MACHINE))
         
-        on_mount(partition(1), format_vfat, [ copy_boot_files, copy_kernel_image, copy_overlays ])
+        on_mount(partition(1), format_vfat, [ copy_boot_files, copy_kernel_image, copy_overlays, copy_custom_boot_files ])
 #        on_mount(partition(2), format_ext4, [ copy_rootfs ])
         
         print("finished write of image {}".format(MACHINE))
@@ -125,7 +125,12 @@ def copy_overlays():
         cmd = subprocess.run(args, shell=False)
         if cmd.returncode != 0:
             raise Exception("could not copy {}".format(dtb))
-    
+
+def copy_custom_boot_files():
+    args = [ "sudo", "cp", "/vagrant/boot/config.txt", MOUNT_DIR ]
+    cmd = subprocess.run(args, shell=False)
+    if cmd.returncode != 0:
+        raise Exception("could not copy config.txt")
 
 def copy_rootfs():
     # TODO copy (optional) urandom, interfaces, wpa supplicant
