@@ -2,10 +2,12 @@
 
 #  burn an sd card with the RPI image after 'bitbake core-image-base'
 
+# TODO run the whole script as sudo to avoid the embedded and allow use od shutil
+
 import os
 import sys
 import subprocess
-import shutil
+import glob
 
 MACHINE = "raspberrypi0"
 PACKAGE = "core-image-base"
@@ -25,7 +27,7 @@ def main():
         check_kernel_image_file()
         print("starting write of image {}".format(MACHINE))
         
-        on_mount(partition(1), format_vfat, [ copy_boot_files, copy_kernel_image ])
+        on_mount(partition(1), format_vfat, [ copy_boot_files, copy_kernel_image, copy_overlays ])
 #        on_mount(partition(2), format_ext4, [ copy_rootfs ])
         
         print("finished write of image {}".format(MACHINE))
@@ -106,8 +108,27 @@ def copy_kernel_image():
     if cmd.returncode != 0:
         raise Ecception("could not copy kernel image")
 
+def copy_overlays():
+    args = [ "sudo", "mkdir", "{}/overlays".format(MOUNT_DIR) ]
+    cmd = subprocess.run(args, shell=False)
+    if cmd.returncode != 0:
+        raise Exception("could not mkdir 'overlays'")
+    dtbos = glob.glob("./raspberrypi0/*raspberrypi0.dtbo")
+    for dtbo in dtbos:
+        bare_dtbo = dtbo.replace("-{}".format(MACHINE), "").replace("/raspberrypi0/", "/")
+        args = [ "sudo", "cp", dtbo, "{}/overlays/{}".format(MOUNT_DIR, bare_dtbo) ]
+        cmd = subprocess.run(args, shell=False)
+        if cmd.returncode != 0:
+            raise Exception("could not copy {}".format(dtbo))
+    for dtb in [ "bcm2708-rpi-0-w.dtb", "bcm2708-rpi-b.dtb", "bcm2708-rpi-b-plus.dtb", "bcm2708-rpi-cm.dtb" ]:
+        args = [ "sudo", "cp", "{}/{}".format(MACHINE, dtb), MOUNT_DIR ]
+        cmd = subprocess.run(args, shell=False)
+        if cmd.returncode != 0:
+            raise Exception("could not copy {}".format(dtb))
+    
+
 def copy_rootfs():
-    # TODO copy (optibal) urandom, interfaces, wpa supplicant
+    # TODO copy (optional) urandom, interfaces, wpa supplicant
     print("copying rootfs")
     args = [ "sudo", "tar", "--numeric-owner", "-C", MOUNT_DIR, "-xjf", ROOTFS_PATH ]
     cmd = subprocess.run(args, shell=False)
