@@ -145,35 +145,35 @@ sudo mkdir /media/card
 One of the goals of this project is to be able to ssh into the RPI via a USB cable.
 The advantage of this over WiFi is that it requires no WiFi network nor access credentials.
 This would be especially useful in some demo situations, which may be hindered by lack of or 
-difficulty of establishing WiFi conenctivity.
+difficulty of establishing WiFi connectivity.
 
 ### Key points
 During the course of getting this to work, I learned the following:
 
-- the "ethernet gadget" package tunnels an IP link over USB
-- the avahi damon and Bonjour service provide an ad-hoc DNS lookup
-- the sshd is not configured by default
+- the "ethernet gadget" module tunnels an ethernet IP link over USB
+- the [avahi](https://www.avahi.org) daemon and Bonjour service provide for ad-hoc DNS lookup
+- the ssh daemon is not configured by default on RPI
 
 ### Mac observations
 On a Mac, the following should be observed:
 
-- in System Preferences > Network, the RNDIS/Ethernet Gadget should have connected status and IP address
-- ping raspberrypi0.local should resolve
-- ssh root@raspberrypi0.local should open a shell on the RPI
+- in System Preferences > Network, the RNDIS/Ethernet Gadget should have connected status and an IP address
+- ``ping raspberrypi0.local`` should resolve
+- ``ssh root@raspberrypi0.local`` should open a shell on the RPI
 
 ### RPI observations
 On the RPI, the following should be observed:
 
 - the avahi-daemon is running (two processes)
-- the dropbear damon is running (see note below)
-- the g_ether module should appear in lsmod (there are a few other associated ones, as well)
-- the usb0 network interfacew should appear in ifconfig
+- the dropbear daemon is running (see note below)
+- the g_ether module should appear in ``lsmod`` (there are a few other associated ones, as well)
+- the usb0 network interfacew should appear in ``ifconfig``
 
 ### dropbear ssh daemon
 The are two options on RPI for ssh service:
 
-- dropbear
-- openssh
+- [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html)
+- [openssh](https://www.openssh.com)
 
 Dropbear is a light-weight implementation.
 
