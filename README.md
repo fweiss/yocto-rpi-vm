@@ -222,6 +222,17 @@ Some things left to explore:
 - remove dtoverlay=dwc2 from config.txt
 - test VM and tooling on Mac
 
+## About the host platform
+This project was developed and testing on the following platform:
+
+### Windows 7 Professional
+
+- Windows 7 Professional
+- Intel XEON E3-1270 V2
+- 16 GB ECC memory
+- SSD main drive
+- SATA 2 TB data drive
+
 ## About Raspberry Pi Zero W
 The MCU is marked Elpida B4432BBPA. Supposed to be BCM2835?
 
