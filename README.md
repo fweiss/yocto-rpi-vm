@@ -33,6 +33,66 @@ Run ``vagrant up`` to create and provision the VM. This may take several minutes
 
 Run ``vagrant ssh`` to access a shell on the VM. You will run the Yocto build and SD Card utilities from this shell.
 
+## Setting up the yocto build environment
+The yocto build environment will be setup as follows:
+
+- /home/vagrant/source - the yocto source and layers
+- /home/vagrant/build - the build workspace
+
+Run ``source /vagrant/setup-yocto.sh``
+
+## Building the image
+Before building the image with the "bitbake" command, check the build parameters.
+
+- conf/bblayers.conf specifies the modules that will go into the image
+- conf/local.conf has the desired machine, e.g. "raspberrypi0"
+
+Run ``bitbake core-image-base``
+
+The first time you run bitbake, it will take several hours. It has to do the following:
+
+- download source files and dependencies
+- apply patches
+- configure the builds
+- compile the sources
+- package the results
+
+Subsequent builds will be faster, as the build caches intermediate files.
+
+## Image the SD Card
+After a new image has been built with bitbake, it's time to put it on the SD Card for the Raspberry Pi.
+This process is not as simple as for the usual RPI images, such as Jessie.
+First, a lank SD Card needs to be properly partitioned.
+Then the files from the build need to be copied into their respective partitions.
+These tasks are automated with scripts included in this process.
+
+### Insert the SD Card
+Insert the SD card into the host system.
+
+Verify access to the SD Card with the ``lsblk`` command on the VM.
+
+You should see ...
+
+> On Windows, there's some setup required to see the SD Card in the VM. See the section "SD Card from VM on Windows" below.
+
+### Format it (only needed on fresh or currupted card):
+
+``cd ~/rpi/meta-rpi/scripts
+~/rpi/meta-rpi/scripts$ sudo ./mk2parts.sh sdb``
+
+sudo mkdir /media/card
+
+### Write the image to the SD Card
+First change the current directory to the images directory
+
+``cd /build/tmp/deploy/images``
+
+Run the ``/vagrant/scripts/write-sd-image.sh``
+
+There may be two prompts to confirm reformatting partitions on the SD Card.
+
+The meddage if it is successful
+
 ## Barebones
 https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/about/
 
@@ -131,29 +191,29 @@ Target image bb files are in rpi/meta-rpi/images.
 
 Target SD card images ``ls -l ~/rpi/build/tmp/deploy/images/raspberrypi0-wifi``
 
-## SDcard from VM on Windows
-https://scribles.net/accessing-sd-card-from-linux-virtualbox-guest-on-windows-host/
+## Access SD Card via VirtualBox on Windows
+There's some setup required to be able to access the SD Card from the VM.
+Once this is done, you'll be able to see the inserted SD Card inside the VM with the ``lsblk`` command.
 
-This requires runnind cmd and VBox as admin, but still access errors.
+> Note: It seems to be better to halt and start the VM with the vagrant commands ``vagrant halt`` and ``vagrant up``.
+> Vagrant seems to get a bit confused when you do this directly from VirtualBox GUI.
 
-WORKING:
-- Insert SD card in reader on Windows
+### VirtualBox Extension Pack
+
+- Insert SD card in reader on Windows host machine
 - Install the VirtualBox Extension Pack
 - Restart VM
+
+### Enable USB in VM settings
+
+- Halt the VM
 - In machine settings, enable USB
 - Add a USB filter, there will be a drop down showing the available host USB devices
-- Restart the VM
-- Wait a while, and the SD card will appear with lsblk in the VM
+- Start the VM
+- Wait a while, and the SD card will appear with ``lsblk`` in the VM
 
-## Image the SD Card
-Format it (only needed on fresh or currupted card):
-
-``cd ~/rpi/meta-rpi/scripts
-~/rpi/meta-rpi/scripts$ sudo ./mk2parts.sh sdb``
-
-sudo mkdir /media/card
-
-``source /vagrant/write_sd.sh``
+> Note: the following was useful. It required running cmd and VBox as admin, but still access errors. 
+> https://scribles.net/accessing-sd-card-from-linux-virtualbox-guest-on-windows-host/
 
 ## SSHD/USB/Ethernet Gadget configuration
 One of the goals of this project is to be able to ssh into the RPI via a USB cable.
@@ -232,6 +292,8 @@ This project was developed and testing on the following platform:
 - 16 GB ECC memory
 - SSD main drive
 - SATA 2 TB data drive
+
+On this platform, the build took about 2 hr 45 min.
 
 ## About Raspberry Pi Zero W
 The MCU is marked Elpida B4432BBPA. Supposed to be BCM2835?
