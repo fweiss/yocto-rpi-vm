@@ -5,19 +5,33 @@ Learning how to build an embedded Linux image for Raspberry Pi
 ## Goals
 - create a bootable SD card for Raspberry Pi Zero W from scratch
 - be able to ssh into the RPI easily via USB (no wifi setup)
-- use a VM to run Yocto
 - find or create a simple Yocto recipe
+- use a VM to run Yocto
 - be able to run Yocto in VM on Windows host
 - be able to write SD card image on Windows from VM
 
 Maybe learn about device drivers.
 
 ## Basic VM
-Vagrant bento/ubuntu
+By using a VM, all the required yocto tools are installed and updated.
+No worries about interference with other project toolchains.
+One shortcoming is that builds are reportedly about half as fast, but with a fast host processor, this is not a big issue.
 
-- vagrant up
-- vagrant ssh
-- sudo /vagrant/bb.sh (some dos line-end issues need to be cleared up)
+This was developed and tested on Windows 7, but should work on Windows 10, Mac and Linux as well.
+
+### VagrantFile
+The Vagrant file specifies:
+
+- the guest OS, bento/ubuntu-18.04
+- the guest VM memory (4096 KB) and number of cores (4)
+- the Chef provisioning recipe for the Yocto prerequisites
+
+The Vagrant file and the Chef cookbook may be be modified to suit the circumstances.
+
+### Creating and accessing the VM
+Run ``vagrant up`` to create and provision the VM. This may take several minutes and requires an internet connection.
+
+Run ``vagrant ssh`` to access a shell on the VM. You will run the Yocto build and SD Card utilities from this shell.
 
 ## Barebones
 https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/about/
@@ -206,6 +220,7 @@ Some things left to explore:
 
 - ``RPI_USE_UBOOT``
 - remove dtoverlay=dwc2 from config.txt
+- test VM and tooling on Mac
 
 ## About Raspberry Pi Zero W
 The MCU is marked Elpida B4432BBPA. Supposed to be BCM2835?
