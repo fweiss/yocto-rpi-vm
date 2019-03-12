@@ -62,16 +62,16 @@ Subsequent builds will be faster, as the build caches intermediate files.
 ## Image the SD Card
 After a new image has been built with bitbake, it's time to put it on the SD Card for the Raspberry Pi.
 This process is not as simple as for the usual RPI images, such as Jessie.
-First, a lank SD Card needs to be properly partitioned.
+First, a blank SD Card needs to be properly partitioned.
 Then the files from the build need to be copied into their respective partitions.
-These tasks are automated with scripts included in this process.
+These tasks are automated with scripts included in this project.
 
 ### Insert the SD Card
 Insert the SD card into the host system.
 
 Verify access to the SD Card with the ``lsblk`` command on the VM.
 
-You should see ...
+You should see a block device named ``sdf``.
 
 > On Windows, there's some setup required to see the SD Card in the VM. See the section "SD Card from VM on Windows" below.
 
@@ -80,18 +80,18 @@ You should see ...
 ``cd ~/rpi/meta-rpi/scripts
 ~/rpi/meta-rpi/scripts$ sudo ./mk2parts.sh sdb``
 
-sudo mkdir /media/card
+Create a mount point ``sudo mkdir /media/card``. 
+
+TODO: make the media/card part of VM 
 
 ### Write the image to the SD Card
 First change the current directory to the images directory
 
 ``cd /build/tmp/deploy/images``
 
-Run the ``/vagrant/scripts/write-sd-image.sh``
+Run ``/vagrant/scripts/write-sd-image.py``
 
-There may be two prompts to confirm reformatting partitions on the SD Card.
-
-The meddage if it is successful
+When the process is successful, you should see a message lieke "finished write of image raspberrypi0".
 
 ## Barebones
 https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/about/
@@ -314,3 +314,4 @@ http://www.circuitbasics.com/raspberry-pi-zero-ethernet-gadget/
 
 https://elinux.org/Bitbake_Cheat_Sheet
 
+https://www.virtualbox.org/wiki/Downloads

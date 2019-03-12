@@ -28,7 +28,7 @@ def main():
         print("starting write of image {}".format(MACHINE))
         
         on_mount(partition(1), format_vfat, [ copy_boot_files, copy_kernel_image, copy_overlays, copy_custom_boot_files ])
-#        on_mount(partition(2), format_ext4, [ copy_rootfs ])
+        on_mount(partition(2), format_ext4, [ copy_rootfs ])
         
         print("finished write of image {}".format(MACHINE))
     except Exception as err:
@@ -75,7 +75,7 @@ def format_vfat(part):
 def format_ext4(part):
     print("ext4 format for {}".format(part))
     # TODO suppress prompt/user interaction, possibly 'yes' command
-    args = [ "sudo", "mkfs.ext4", "-q", "-L", "ROOT", part ]
+    args = [ "sudo", "mkfs.ext4", "-F", "-q", "-L", "ROOT", part ]
     cmd = subprocess.run(args, shell=False)
     if cmd.returncode != 0:
         raise Exception("could not format")
