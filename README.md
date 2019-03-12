@@ -201,6 +201,12 @@ with yocto meta-pi
 
 Perhaps the avahi daemon is not running?
 
+## Loose ends
+Some things left to explore:
+
+- ``RPI_USE_UBOOT``
+- remove dtoverlay=dwc2 from config.txt
+
 ## About Raspberry Pi Zero W
 The MCU is marked Elpida B4432BBPA. Supposed to be BCM2835?
 
