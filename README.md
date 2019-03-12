@@ -91,7 +91,7 @@ First change the current directory to the images directory
 
 Run ``/vagrant/scripts/write-sd-image.py``
 
-When the process is successful, you should see a message lieke "finished write of image raspberrypi0".
+When the process is successful, you should see a message like "finished write of image raspberrypi0".
 
 ## Barebones
 https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/about/
@@ -305,6 +305,8 @@ https://www.yoctoproject.org/
 https://hackaday.io/project/152729-8bitrobots-module/log/145981-setting-up-yocto-for-raspberry-pi-zero
 
 https://www.yoctoproject.org/docs/2.6.1/brief-yoctoprojectqs/brief-yoctoprojectqs.html
+
+https://github.com/jumpnow/meta-rpi
 
 https://blog.gbaman.info/?p=791 Ethernet over USB
 
