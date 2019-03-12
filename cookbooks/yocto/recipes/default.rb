@@ -3,6 +3,7 @@
 apt_update
 
 # ubuntu 18.04 already has python 3.6.7
+# apt-get install -y python python3 python3-pip python3-pexpect
 
 apt_package 'gawk'
 apt_package 'wget'
