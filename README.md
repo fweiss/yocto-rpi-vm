@@ -77,8 +77,7 @@ You should see a block device named ``sdf``.
 
 ### Format it (only needed on fresh or currupted card):
 
-``cd ~/rpi/meta-rpi/scripts
-~/rpi/meta-rpi/scripts$ sudo ./mk2parts.sh sdb``
+``/vagrant/scripts/partition.py``
 
 Create a mount point ``sudo mkdir /media/card``. 
 
