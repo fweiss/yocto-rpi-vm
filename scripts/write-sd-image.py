@@ -104,54 +104,33 @@ def copy_boot_files():
 #            shutil.copy(full_file_name, MOUNT_DIR)
             args = [ "sudo", "cp", full_file_name, MOUNT_DIR ]
             run_and_check(args, "could not copy boot loader files")
-#            cmd = subprocess.run(args, shell=False)
-#            if cmd.returncode != 0:
-#                raise Exception("could not copy boot loader files")
 
 def copy_kernel_image():
     print("copying kernel image")
     args = [ "sudo", "cp", KERNEL_IMAGE_PATH, "{}/kernel.img".format(MOUNT_DIR) ]
     run_and_check(args, "could not copy kernel image")
-#    cmd = subprocess.run(args, shell=False)
-#    if cmd.returncode != 0:
-#        raise Ecception("could not copy kernel image")
 
 def copy_overlays():
     args = [ "sudo", "mkdir", "{}/overlays".format(MOUNT_DIR) ]
     run_and_check(args, "could not mkdir 'overlays'")
-#    cmd = subprocess.run(args, shell=False)
-#    if cmd.returncode != 0:
-#        raise Exception("could not mkdir 'overlays'")
     dtbos = glob.glob("./raspberrypi0/*raspberrypi0.dtbo")
     for dtbo in dtbos:
         bare_dtbo = dtbo.replace("-{}".format(MACHINE), "").replace("/raspberrypi0/", "/")
         args = [ "sudo", "cp", dtbo, "{}/overlays/{}".format(MOUNT_DIR, bare_dtbo) ]
         run_and_check(args, "could not copy {}".format(dtbo))
-#        cmd = subprocess.run(args, shell=False)
-#        if cmd.returncode != 0:
-#            raise Exception("could not copy {}".format(dtbo))
     for dtb in [ "bcm2708-rpi-0-w.dtb", "bcm2708-rpi-b.dtb", "bcm2708-rpi-b-plus.dtb", "bcm2708-rpi-cm.dtb" ]:
         args = [ "sudo", "cp", "{}/{}".format(MACHINE, dtb), MOUNT_DIR ]
         run_and_check(args, "could not copy {}".format(dtb))
-#        cmd = subprocess.run(args, shell=False)
-#        if cmd.returncode != 0:
-#            raise Exception("could not copy {}".format(dtb))
 
 def copy_custom_boot_files():
     args = [ "sudo", "cp", "/vagrant/boot/config.txt", MOUNT_DIR ]
     run_and_check(args, "could not copy config.txt")
-#    cmd = subprocess.run(args, shell=False)
-#    if cmd.returncode != 0:
-#        raise Exception("could not copy config.txt")
 
 def copy_rootfs():
     # TODO copy (optional) urandom, interfaces, wpa supplicant
     print("copying rootfs")
     args = [ "sudo", "tar", "--numeric-owner", "-C", MOUNT_DIR, "-xjf", ROOTFS_PATH ]
     run_and_check(args, "could not copy rootfs")
-#    cmd = subprocess.run(args, shell=False)
-#    if cmd.returncode != 0:
-#        raise Exception("root fs could not be copied", cmd)
 
 ############## file system mount wrapper
 
@@ -162,9 +141,6 @@ def on_mount(device, format_part, fns):
     print("mounting {} on {}".format(device, MOUNT_DIR))
     args = [ "sudo", "mount", device, MOUNT_DIR ]
     run_and_check(args, "could not mount {} on {}".format(device, MOUNT_DIR))
-#    cmd = subprocess.run(args, shell=False)
-#    if cmd.returncode != 0:
-#        raise Exception("mount", cmd)
 
     try:    
         for fn in fns:
@@ -174,9 +150,6 @@ def on_mount(device, format_part, fns):
         print("umounting {} from {}".format(device, MOUNT_DIR))
         args = [ "sudo", "umount", device ]
         run_and_check(args, "could not umount {}".format(device));
-#        cmd = subprocess.run(args, shell=False)
-#        if cmd.returncode != 0:
-#            raise Exception("umount", cmd)
 
 main()
     
