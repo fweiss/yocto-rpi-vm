@@ -57,6 +57,16 @@ def check_kernel_image_file():
     if not os.path.exists(KERNEL_IMAGE_PATH):
         raise Exception("kernel image file '{}' not found".format(KERNEL_IMAGE_PATH))
 
+############ subprocess helper function
+
+# run a subprocess with the given args and no shell
+# check return code and if not zero, raise exception with given message
+def run_and_check(args, fail_message):
+    proc = subprocess.run(args, shell=False)
+    if proc.returncode != 0:
+        raise Exception(fail_message)
+    
+
 ############ filesytem helper functions
 
 def partition(partition):
@@ -68,17 +78,13 @@ def format_null(part):
 def format_vfat(part):
     print("vfat format for {}".format(part))
     args = [ "sudo", "mkfs.vfat", "-F", "32", part, "-n", "BOOT" ]
-    cmd = subprocess.run(args, shell=False)
-    if cmd.returncode != 0:
-        raise Exception("could not format vfat on {}".format(part))
+    run_and_check(args, "could not format vfat on {}".format(part))
 
 def format_ext4(part):
     print("ext4 format for {}".format(part))
     # TODO suppress prompt/user interaction, possibly 'yes' command
     args = [ "sudo", "mkfs.ext4", "-F", "-q", "-L", "ROOT", part ]
-    cmd = subprocess.run(args, shell=False)
-    if cmd.returncode != 0:
-        raise Exception("could not format")
+    run_and_check(args, "could not format ext4 on {}".format(part))
     
 ########### file copy functions
 
