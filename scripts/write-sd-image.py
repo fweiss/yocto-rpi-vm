@@ -2,7 +2,7 @@
 
 #  burn an sd card with the RPI image after 'bitbake core-image-base'
 
-# TODO run the whole script as sudo to avoid the embedded and allow use od shutil
+# TODO run the whole script as sudo to avoid the embedded sudo and allow use of shutil
 
 import os
 import sys
@@ -25,12 +25,14 @@ def main():
         check_device_path()
         check_image_paths()
         check_kernel_image_file()
+        
         print("starting write of image {}".format(MACHINE))
         
         on_mount(partition(1), format_vfat, [ copy_boot_files, copy_kernel_image, copy_overlays, copy_custom_boot_files ])
         on_mount(partition(2), format_ext4, [ copy_rootfs ])
         
         print("finished write of image {}".format(MACHINE))
+        
     except Exception as err:
         print("FAIL: {}".format(err))
         sys.exit(1);
@@ -66,7 +68,6 @@ def run_and_check(args, fail_message):
     if proc.returncode != 0:
         raise Exception(fail_message, proc)
     
-
 ############ filesytem helper functions
 
 def partition(partition):
@@ -82,26 +83,19 @@ def format_vfat(part):
 
 def format_ext4(part):
     print("ext4 format for {}".format(part))
-    # TODO suppress prompt/user interaction, possibly 'yes' command
     args = [ "sudo", "mkfs.ext4", "-F", "-q", "-L", "ROOT", part ]
     run_and_check(args, "could not format ext4 on {}".format(part))
     
 ########### file copy functions
 
+# an alternative would bve to use shutil to copy files, 
+# but that would require running the entire python script as su
+
 def copy_boot_files():
-    # TODO
-    #copy boot files (cmdline, config.txt)
-    #copy boot partition
-    #rename_kernel_img
     print("copying boot loader files")
-#    args = [ "sudo", "cp", "{}/*".format(BOOT_FILES_PATH), MOUNT_DIR ]
-#    cmd = subprocess.run(args, shell=True)
-#    if cmd.returncode != 0:
-#        raise Exception("could not copy boot loader files")
     for boot_file in os.listdir(BOOT_FILES_PATH):
         full_file_name = os.path.join(BOOT_FILES_PATH, boot_file)
         if os.path.isfile(full_file_name):
-#            shutil.copy(full_file_name, MOUNT_DIR)
             args = [ "sudo", "cp", full_file_name, MOUNT_DIR ]
             run_and_check(args, "could not copy boot loader files")
 
@@ -111,6 +105,7 @@ def copy_kernel_image():
     run_and_check(args, "could not copy kernel image")
 
 def copy_overlays():
+    print("copying device tree overlays")
     args = [ "sudo", "mkdir", "{}/overlays".format(MOUNT_DIR) ]
     run_and_check(args, "could not mkdir 'overlays'")
     dtbos = glob.glob("./raspberrypi0/*raspberrypi0.dtbo")
@@ -118,11 +113,13 @@ def copy_overlays():
         bare_dtbo = dtbo.replace("-{}".format(MACHINE), "").replace("/raspberrypi0/", "/")
         args = [ "sudo", "cp", dtbo, "{}/overlays/{}".format(MOUNT_DIR, bare_dtbo) ]
         run_and_check(args, "could not copy {}".format(dtbo))
-    for dtb in [ "bcm2708-rpi-0-w.dtb", "bcm2708-rpi-b.dtb", "bcm2708-rpi-b-plus.dtb", "bcm2708-rpi-cm.dtb" ]:
+    dtbs = [ "bcm2708-rpi-0-w.dtb", "bcm2708-rpi-b.dtb", "bcm2708-rpi-b-plus.dtb", "bcm2708-rpi-cm.dtb" ]
+    for dtb in dtbs:
         args = [ "sudo", "cp", "{}/{}".format(MACHINE, dtb), MOUNT_DIR ]
         run_and_check(args, "could not copy {}".format(dtb))
 
 def copy_custom_boot_files():
+    print("copying custom boot files")
     args = [ "sudo", "cp", "/vagrant/boot/config.txt", MOUNT_DIR ]
     run_and_check(args, "could not copy config.txt")
 
