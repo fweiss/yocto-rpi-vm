@@ -112,56 +112,25 @@ Run ``/vagrant/scripts/write-sd-image.py``
 When the process is successful, you should see a message like "Finished write of image raspberrypi0".
 
 ## Debugging the image
-TBD
+Debugging the image on Raspberry Pi Zero/Zero W:
+
+- use a monitor with switchable HDMI input
+- HDMI - HDMI mini cable or adapter
+- USB micro to USB A adapter to connect extra keyboard
+- power via the power USB micro connector
 
 - LED flashes seven times, indicating missing kernel.img
 
-## Barebones
-https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/about/
+## About bitbake
+Target image bb files are in rpi/meta-rpi/images.
 
-mkdir bare-source
-cd bare-source
-git clone -b thud git://git.yoctoproject.org/poky
-git clone -b thud git://git.openembedded.org/meta-openembedded
-git clone -b thud git://git.yoctoproject.org/meta-raspberrypi
-cd ..
-source bare-source/poky/oe-init-build-env bare-build
-vi conf/bblayers.conf: ``cp /vagrant/conf/bblayers.conf conf``
-vi conf/local.conf: add ``MACHINE ?= "raspberrypi0"`` 
-bitbake core-image-base
+Windows: bitbake won't work on VM shared folder. Something about locking files. 
+Kind of a shame, because it would have been nice to use IDE on host system to browse the yocto/poky/oe meta files. 
+Might be possible to do a reverse share.
 
-copy kernel and rootfs
+When you see 'bitbake command not found': source oe-init-build-env
 
-rename zImage
-
-In the /boot/cmdline.tx file add the following at the end after rootwait: ``modules-load=dwc2,g_ether``
-
-In the /boot/config.txt file, add the following at the end: ``dtoverlay=dwc2``
-
-### Files
-The cmdline.txt and conf.txt files are in ``~/bare-build/tmp/deploy/images/raspberrypi0/bcm2835-bootfiles``
-
-Produced a zimage file instead of kernel.img. LED flashes seven time, indicating missing kernel.img.
-
-Rename zImge to kernel.img gets console output, but cannot find the root fs.
-
-Comparing cmsdine.txt to working Jessie image, there's root=/dev/mmcblk0p2 instead of root=PARTUUID=03e791ca-02.
-
-Trying to add ROOT_VM = "root=PARTUUID=${DISK_SIGNATURE}-02" to conf/conf.txt
-
-Solution: need to run modified meta-rpi/scriptsd/copy_roofs.sh
-
-## New toolchain
-https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
-
-cd ~
-source jumpnowtek.sh
-
-in local.conf, add ``ENABLE_DWC2_PERIPHERAL = "1"``
-
-cd ~
-source poky-thud/oe-init-build-env ~/rpi/build
-bitbake console-image
+Target SD card images ``ls -l ~/rpi/build/tmp/deploy/images/raspberrypi0-wifi``
 
 ### Images
 ~/rpi/meta-rpi/images
@@ -175,44 +144,6 @@ flask-image: console-basic-image
 
 ### Config
 ~/rpi/build/conf/local.conf
-
-## Old toolchain
-
-### generic 
-git clone git://git.yoctoproject.org/poky
-cd poky
-git checkout tags/yocto-2.6.1 -b my-yocto-2.6.1
-source oe-init-build-env
-
-### RPI
-cd /vagrant - bitbake won't work on shared folder!
-
-
-mkdir -p ~/rpi/sources
-source /vagrant/sources.sh
-cd ~/rpi
-source sources/poky/oe-init-build-env rpi-build
-
-now in build directory
-
-cp ~/rpi/sources/meta-8bitrobots/example-config/bblayers.conf conf/bblayers.conf
-cp ~/rpi/sources/meta-8bitrobots/example-config/local.conf conf/local.conf
-
-add meta-rust to bblayers.conf
-
-bitbake rpi-hwup-image
-started in VM on MBP @14:00 end @20:30 (error)
-started in VMN on Xeon @10:52
-
-### Build bugs
-missing "bits/c++config.h": sudo apt-get install gcc-multilib g++-multilib
-nodejs compile error: remove nodejs, etc from bblayers.conf
-bitbake command not found: source oe-init-build-env
-
-## About bitbake
-Target image bb files are in rpi/meta-rpi/images.
-
-Target SD card images ``ls -l ~/rpi/build/tmp/deploy/images/raspberrypi0-wifi``
 
 ## Access SD Card via VirtualBox on Windows
 There's some setup required to be able to access the SD Card from the VM.
@@ -303,6 +234,8 @@ Perhaps the avahi daemon is not running?
 ### I2C
 
 Add ``i2c_dev`` to /etc/modules. It seems i2c is not in the device tree, unlike SPI.
+
+Although there's supposed to be in later version yocto, adding ``ENABLE_I2C = "1"`` to conf/local.conf.
 
 ## Loose ends
 Some things left to explore:
