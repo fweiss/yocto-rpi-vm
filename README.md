@@ -1,4 +1,4 @@
-# yocto-pi-vm
+# yocto-rpi-vm
 
 Learning how to build an embedded Linux image for Raspberry Pi
 
@@ -12,11 +12,18 @@ Learning how to build an embedded Linux image for Raspberry Pi
 
 Maybe learn about device drivers.
 
-## Prequisites
+## Prerequisites
 You'll need the following applications installed to use this project:
 
 - (VirtualBox)[https://www.virtualbox.org]
 - (Vagrant)[https://www.vagrantup.com/]
+
+You'l also need:
+
+- a Raspberry Pi, preferably a Zero or Zero W
+- host machine with SD Card reader
+- spare SD Card 8 GB or greater
+- micro USB cable
 
 You'll also need a fast internet connection, as there are many downloads.
 
@@ -47,7 +54,7 @@ The yocto build environment will be setup in the VM as follows:
 - /home/vagrant/source - the yocto source and layers
 - /home/vagrant/build - the build workspace
 
-Run ``source /vagrant/setup-yocto.sh``
+Run ``source /vagrant/scripts/setup-yocto.sh``
 
 ## Building the image
 Before building the image with the "bitbake" command, check the build parameters.
@@ -211,6 +218,12 @@ Dropbear is a light-weight implementation.
 In the /boot/cmdline.tx file add the following at the end after rootwait: ``modules-load=dwc2,g_ether``
 
 In the /boot/config.txt file, add the following at the end: ``dtoverlay=dwc2``
+
+### sftp server
+It's handly to have sftp server on the RPI, so that you can easily upload files
+without having to setup full internet connection.
+
+Supposed to be handled with openssh
 
 
 ## Connect via ssh over USB
