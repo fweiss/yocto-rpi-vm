@@ -12,6 +12,14 @@ Learning how to build an embedded Linux image for Raspberry Pi
 
 Maybe learn about device drivers.
 
+## Prequisites
+You'll need the following applications installed to use this project:
+
+- (VirtualBox)[https://www.virtualbox.org]
+- (Vagrant)[https://www.vagrantup.com/]
+
+You'll also need a fast internet connection, as there are many downloads.
+
 ## Basic VM
 By using a VM, all the required yocto tools are installed and updated.
 No worries about interference with other project toolchains.
@@ -34,7 +42,7 @@ Run ``vagrant up`` to create and provision the VM. This may take several minutes
 Run ``vagrant ssh`` to access a shell on the VM. You will run the Yocto build and SD Card utilities from this shell.
 
 ## Setting up the yocto build environment
-The yocto build environment will be setup as follows:
+The yocto build environment will be setup in the VM as follows:
 
 - /home/vagrant/source - the yocto source and layers
 - /home/vagrant/build - the build workspace
@@ -44,8 +52,11 @@ Run ``source /vagrant/setup-yocto.sh``
 ## Building the image
 Before building the image with the "bitbake" command, check the build parameters.
 
-- conf/bblayers.conf specifies the modules that will go into the image
-- conf/local.conf has the desired machine, e.g. "raspberrypi0"
+- conf/bblayers.conf - specifies the modules that will go into the image
+- conf/local.conf - has the desired machine, e.g. "raspberrypi0"
+
+> ``MACHINE ?= "raspberrypi0``
+> ``ENABLE_I2C = "1"``
 
 Run ``bitbake core-image-base``
 
@@ -73,24 +84,37 @@ Verify access to the SD Card with the ``lsblk`` command on the VM.
 
 You should see a block device named ``sdf``.
 
-> On Windows, there's some setup required to see the SD Card in the VM. See the section "SD Card from VM on Windows" below.
+> On Windows, there's some setup required to see the SD Card in the VM. See the section "Access SD Card via VirtualBox on Windows" below.
 
-### Format it (only needed on fresh or currupted card):
+### Partition the SD Card (only needed on fresh or currupted card)
+This will create two partitions on the SD Card:
 
-``/vagrant/scripts/partition.py``
+- a smallish 'boot' partition for the bootloader
+- a large 'root' partition for the main file system
+
+Run ``/vagrant/scripts/partition.py``
 
 Create a mount point ``sudo mkdir /media/card``. 
 
 TODO: make the media/card part of VM 
 
 ### Write the image to the SD Card
+This step prepares an SD Card that the RPI can boot.
+
+> Look at the source code for an overview of what it does.
+
 First change the current directory to the images directory
 
 ``cd /build/tmp/deploy/images``
 
 Run ``/vagrant/scripts/write-sd-image.py``
 
-When the process is successful, you should see a message like "finished write of image raspberrypi0".
+When the process is successful, you should see a message like "Finished write of image raspberrypi0".
+
+## Debugging the image
+TBD
+
+- LED flashes seven times, indicating missing kernel.img
 
 ## Barebones
 https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/about/
@@ -273,6 +297,12 @@ with yocto meta-pi
 - the RNDIS/Ethernet Gadget does not connect
 
 Perhaps the avahi daemon is not running?
+
+## GPIO
+
+### I2C
+
+Add ``i2c_dev`` to /etc/modules. It seems i2c is not in the device tree, unlike SPI.
 
 ## Loose ends
 Some things left to explore:
