@@ -244,18 +244,34 @@ with yocto meta-pi
 Perhaps the avahi daemon is not running?
 
 ## GPIO
+A further goal is to run an app on the RPI that interacts with the hardware.
+An example is to drive a two-axis, servo-controlled arm.
+For expandability a servo hat was used.
+In any case, the test was to control the servos from a Python program.
 
 ### I2C
+The yocto overlays support I2C. The following should be added to ~/build/conf/local.conf:
 
-Add ``i2c_dev`` to /etc/modules. It seems i2c is not in the device tree, unlike SPI.
+```
+ENABLE_I2C = "1"
+```
 
-Although there's supposed to be in later version yocto, adding ``ENABLE_I2C = "1"`` to conf/local.conf.
+This setting will add the following to boot:/config.txt:
 
-This seems to make the dtparams in config.txt
+```
+dtparam=i2c1=on
+dtparam=i2c_arm=on
+```
 
-but still need to modprobe i2c_dev to get /dev/i2c-1 to appear
+> There were some problems with the yocto-generated boot:/config.txt.
+> Still using a short one from /vagrant/boot.
 
-Supposed to add i2c_dev to /etc/modules
+> But still need to ``modprobe i2c_dev`` after boot to get /dev/i2c-1 to appear
+
+It seems there's something missing in /etc/init.d, or in /etc/modprobe.d, or in thr udev configuration.
+
+> Other sources say add ``i2c_dev`` to /etc/modules. because i2c is not in the device tree, unlike SPI.
+> But that doesn't work and the /etc/modules file gets deleted or borked at bootup.
 
 ## Loose ends
 Some things left to explore:
@@ -270,12 +286,18 @@ This project was developed and testing on the following platform:
 ### Windows 7 Professional
 
 - Windows 7 Professional
-- Intel XEON E3-1270 V2
-- 16 GB ECC memory
+- Intel Xeon E3-1270 V2 @ 3.50 GHz
+- 16 GB memory
 - SSD main drive
 - SATA 2 TB data drive
 
 On this platform, the build took about 2 hr 45 min.
+
+### MacBook Pro
+
+- MBP Core i7 @ 2.7 GHz
+- macOS High Sierra 10.13.6
+- 16 GB memory
 
 ## About Raspberry Pi Zero W
 The MCU is marked Elpida B4432BBPA. Supposed to be BCM2835?
