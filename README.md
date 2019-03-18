@@ -15,8 +15,8 @@ Maybe learn about device drivers.
 ## Prerequisites
 You'll need the following applications installed to use this project:
 
-- (VirtualBox)[https://www.virtualbox.org]
-- (Vagrant)[https://www.vagrantup.com/]
+- [VirtualBox](https://www.virtualbox.org) - a free, widely used hypervisor
+- [Vagrant](https://www.vagrantup.com) - a free tool for building and configuring VMs
 
 You'l also need:
 
@@ -209,13 +209,14 @@ On the RPI, the following should be observed:
 ### dropbear ssh daemon
 The are two options on RPI for ssh service:
 
-- [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html)
-- [openssh](https://www.openssh.com)
+- [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html) - lightweight ssh service
+- [openssh](https://www.openssh.com) - open source, widely used suite for secure connectivity
 
 Dropbear is a light-weight implementation.
 
-
 (need to add to recipe)
+
+> The following are taken care of by yocto, correct?
 
 In the /boot/cmdline.tx file add the following at the end after rootwait: ``modules-load=dwc2,g_ether``
 
@@ -312,5 +313,5 @@ https://elinux.org/Bitbake_Cheat_Sheet
 
 https://www.virtualbox.org/wiki/Downloads
 
-(Detailed description of RPI Device Trees and Overlays)[https://www.raspberrypi.org/documentation/configuration/device-tree.md]
+[Detailed description of RPI Device Trees and Overlays](https://www.raspberrypi.org/documentation/configuration/device-tree.md)
 
