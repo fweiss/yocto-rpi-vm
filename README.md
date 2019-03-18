@@ -220,11 +220,12 @@ In the /boot/cmdline.tx file add the following at the end after rootwait: ``modu
 In the /boot/config.txt file, add the following at the end: ``dtoverlay=dwc2``
 
 ### sftp server
-It's handly to have sftp server on the RPI, so that you can easily upload files
+It's handy to have sftp server on the RPI, so that you can easily upload files
 without having to setup full internet connection.
 
 Supposed to be handled with openssh
 
+> Just use scp, instead!
 
 ## Connect via ssh over USB
 https://www.thepolyglotdeveloper.com/2016/06/connect-raspberry-pi-zero-usb-cable-ssh/
@@ -249,6 +250,12 @@ Perhaps the avahi daemon is not running?
 Add ``i2c_dev`` to /etc/modules. It seems i2c is not in the device tree, unlike SPI.
 
 Although there's supposed to be in later version yocto, adding ``ENABLE_I2C = "1"`` to conf/local.conf.
+
+This seems to make the dtparams in config.txt
+
+but still need to modprobe i2c_dev to get /dev/i2c-1 to appear
+
+Supposed to add i2c_dev to /etc/modules
 
 ## Loose ends
 Some things left to explore:
@@ -292,3 +299,6 @@ http://www.circuitbasics.com/raspberry-pi-zero-ethernet-gadget/
 https://elinux.org/Bitbake_Cheat_Sheet
 
 https://www.virtualbox.org/wiki/Downloads
+
+(Detailed description of RPI Device Trees and Overlays)[https://www.raspberrypi.org/documentation/configuration/device-tree.md]
+
