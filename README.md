@@ -176,11 +176,13 @@ Once this is done, you'll be able to see the inserted SD Card inside the VM with
 > Note: the following was useful. It required running cmd and VBox as admin, but still access errors. 
 > https://scribles.net/accessing-sd-card-from-linux-virtualbox-guest-on-windows-host/
 
-## SSHD/USB/Ethernet Gadget configuration
+## Connect via ssh over USB
 One of the goals of this project is to be able to ssh into the RPI via a USB cable.
 The advantage of this over WiFi is that it requires no WiFi network nor access credentials.
 This would be especially useful in some demo situations, which may be hindered by lack of or 
 difficulty of establishing WiFi connectivity.
+
+https://www.thepolyglotdeveloper.com/2016/06/connect-raspberry-pi-zero-usb-cable-ssh/
 
 ### Key points
 During the course of getting this to work, I learned the following:
@@ -219,7 +221,7 @@ In the /boot/cmdline.tx file add the following at the end after rootwait: ``modu
 
 In the /boot/config.txt file, add the following at the end: ``dtoverlay=dwc2``
 
-### sftp server
+### Transfering files over ssh
 It's handy to have sftp server on the RPI, so that you can easily upload files
 without having to setup full internet connection.
 
@@ -227,21 +229,9 @@ Supposed to be handled with openssh
 
 > Just use scp, instead!
 
-## Connect via ssh over USB
-https://www.thepolyglotdeveloper.com/2016/06/connect-raspberry-pi-zero-usb-cable-ssh/
-
-### debugging the connection
-using a mac host
-
-with jessie:
-- ssh works @raspberrypi.local
-- the RNDIS/Ethernet Gadget is connected self-assigned 169.254.19.59
-
-with yocto meta-pi
-- raspberrypi.local does not resolve
-- the RNDIS/Ethernet Gadget does not connect
-
-Perhaps the avahi daemon is not running?
+### Debugging the connection
+It was very helpful to just connect the RPI via HDMI and USB keyboard to debug the boot process,
+look at log files, and test some assumptions.
 
 ## GPIO
 A further goal is to run an app on the RPI that interacts with the hardware.
