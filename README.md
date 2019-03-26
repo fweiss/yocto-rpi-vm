@@ -62,8 +62,10 @@ Before building the image with the "bitbake" command, check the build parameters
 - conf/bblayers.conf - specifies the modules that will go into the image
 - conf/local.conf - has the desired machine, e.g. "raspberrypi0"
 
-> ``MACHINE ?= "raspberrypi0``
-> ``ENABLE_I2C = "1"``
+The conf/local.conf file should have:
+
+```MACHINE ?= "raspberrypi0
+ENABLE_I2C = "1"```
 
 Run ``bitbake core-image-base``
 
@@ -117,6 +119,8 @@ First change the current directory to the images directory
 Run ``/vagrant/scripts/write-sd-image.py``
 
 When the process is successful, you should see a message like "Finished write of image raspberrypi0".
+
+> TODO: Make the script work from ~/build
 
 ## Debugging the image
 Debugging the image on Raspberry Pi Zero/Zero W:
@@ -270,6 +274,7 @@ Some things left to explore:
 - ``RPI_USE_UBOOT``
 - remove dtoverlay=dwc2 from config.txt
 - test VM and tooling on Mac
+- be able to access the Pi Zero W as a Bluetooth peripheral
 
 ## About the host platform
 This project was developed and testing on the following platform:
