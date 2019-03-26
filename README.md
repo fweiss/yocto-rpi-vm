@@ -15,8 +15,8 @@ Maybe learn about device drivers.
 ## Prerequisites
 You'll need the following applications installed to use this project:
 
-- (VirtualBox)[https://www.virtualbox.org]
-- (Vagrant)[https://www.vagrantup.com/]
+- [VirtualBox](https://www.virtualbox.org) - a free, widely used hypervisor
+- [Vagrant](https://www.vagrantup.com) - a free tool for building and configuring VMs
 
 You'l also need:
 
@@ -176,11 +176,13 @@ Once this is done, you'll be able to see the inserted SD Card inside the VM with
 > Note: the following was useful. It required running cmd and VBox as admin, but still access errors. 
 > https://scribles.net/accessing-sd-card-from-linux-virtualbox-guest-on-windows-host/
 
-## SSHD/USB/Ethernet Gadget configuration
+## Connect via ssh over USB
 One of the goals of this project is to be able to ssh into the RPI via a USB cable.
 The advantage of this over WiFi is that it requires no WiFi network nor access credentials.
 This would be especially useful in some demo situations, which may be hindered by lack of or 
 difficulty of establishing WiFi connectivity.
+
+https://www.thepolyglotdeveloper.com/2016/06/connect-raspberry-pi-zero-usb-cable-ssh/
 
 ### Key points
 During the course of getting this to work, I learned the following:
@@ -207,48 +209,60 @@ On the RPI, the following should be observed:
 ### dropbear ssh daemon
 The are two options on RPI for ssh service:
 
-- [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html)
-- [openssh](https://www.openssh.com)
+- [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html) - lightweight ssh service
+- [openssh](https://www.openssh.com) - open source, widely used suite for secure connectivity
 
 Dropbear is a light-weight implementation.
 
-
 (need to add to recipe)
+
+> The following are taken care of by yocto, correct?
 
 In the /boot/cmdline.tx file add the following at the end after rootwait: ``modules-load=dwc2,g_ether``
 
 In the /boot/config.txt file, add the following at the end: ``dtoverlay=dwc2``
 
-### sftp server
-It's handly to have sftp server on the RPI, so that you can easily upload files
+### Transfering files over ssh
+It's handy to have sftp server on the RPI, so that you can easily upload files
 without having to setup full internet connection.
 
 Supposed to be handled with openssh
 
+> Just use scp, instead!
 
-## Connect via ssh over USB
-https://www.thepolyglotdeveloper.com/2016/06/connect-raspberry-pi-zero-usb-cable-ssh/
-
-### debugging the connection
-using a mac host
-
-with jessie:
-- ssh works @raspberrypi.local
-- the RNDIS/Ethernet Gadget is connected self-assigned 169.254.19.59
-
-with yocto meta-pi
-- raspberrypi.local does not resolve
-- the RNDIS/Ethernet Gadget does not connect
-
-Perhaps the avahi daemon is not running?
+### Debugging the connection
+It was very helpful to just connect the RPI via HDMI and USB keyboard to debug the boot process,
+look at log files, and test some assumptions.
 
 ## GPIO
+A further goal is to run an app on the RPI that interacts with the hardware.
+An example is to drive a two-axis, servo-controlled arm.
+For expandability a servo hat was used.
+In any case, the test was to control the servos from a Python program.
 
 ### I2C
+The yocto overlays support I2C. The following should be added to ~/build/conf/local.conf:
 
-Add ``i2c_dev`` to /etc/modules. It seems i2c is not in the device tree, unlike SPI.
+```
+ENABLE_I2C = "1"
+```
 
-Although there's supposed to be in later version yocto, adding ``ENABLE_I2C = "1"`` to conf/local.conf.
+This setting will add the following to boot:/config.txt:
+
+```
+dtparam=i2c1=on
+dtparam=i2c_arm=on
+```
+
+> There were some problems with the yocto-generated boot:/config.txt.
+> Still using a short one from /vagrant/boot.
+
+> But still need to ``modprobe i2c_dev`` after boot to get /dev/i2c-1 to appear
+
+It seems there's something missing in /etc/init.d, or in /etc/modprobe.d, or in thr udev configuration.
+
+> Other sources say add ``i2c_dev`` to /etc/modules. because i2c is not in the device tree, unlike SPI.
+> But that doesn't work and the /etc/modules file gets deleted or borked at bootup.
 
 ## Loose ends
 Some things left to explore:
@@ -263,12 +277,18 @@ This project was developed and testing on the following platform:
 ### Windows 7 Professional
 
 - Windows 7 Professional
-- Intel XEON E3-1270 V2
-- 16 GB ECC memory
+- Intel Xeon E3-1270 V2 @ 3.50 GHz
+- 16 GB memory
 - SSD main drive
 - SATA 2 TB data drive
 
 On this platform, the build took about 2 hr 45 min.
+
+### MacBook Pro
+
+- MBP Core i7 @ 2.7 GHz
+- macOS High Sierra 10.13.6
+- 16 GB memory
 
 ## About Raspberry Pi Zero W
 The MCU is marked Elpida B4432BBPA. Supposed to be BCM2835?
@@ -292,3 +312,6 @@ http://www.circuitbasics.com/raspberry-pi-zero-ethernet-gadget/
 https://elinux.org/Bitbake_Cheat_Sheet
 
 https://www.virtualbox.org/wiki/Downloads
+
+[Detailed description of RPI Device Trees and Overlays](https://www.raspberrypi.org/documentation/configuration/device-tree.md)
+
