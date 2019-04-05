@@ -3,6 +3,7 @@
 #  burn an sd card with the RPI image after 'bitbake core-image-base'
 
 # TODO run the whole script as sudo to avoid the embedded sudo and allow use of shutil
+# TODO use the rpi-sdimg with dd?
 
 import os
 import sys
