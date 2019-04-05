@@ -64,8 +64,10 @@ Before building the image with the "bitbake" command, check the build parameters
 
 The conf/local.conf file should have:
 
-```MACHINE ?= "raspberrypi0
-ENABLE_I2C = "1"```
+```
+MACHINE ?= "raspberrypi0
+ENABLE_I2C = "1"
+```
 
 Run ``bitbake core-image-base``
 
