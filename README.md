@@ -62,8 +62,12 @@ Before building the image with the "bitbake" command, check the build parameters
 - conf/bblayers.conf - specifies the modules that will go into the image
 - conf/local.conf - has the desired machine, e.g. "raspberrypi0"
 
-> ``MACHINE ?= "raspberrypi0``
-> ``ENABLE_I2C = "1"``
+The conf/local.conf file should have:
+
+```
+MACHINE ?= "raspberrypi0
+ENABLE_I2C = "1"
+```
 
 Run ``bitbake core-image-base``
 
@@ -117,6 +121,8 @@ First change the current directory to the images directory
 Run ``/vagrant/scripts/write-sd-image.py``
 
 When the process is successful, you should see a message like "Finished write of image raspberrypi0".
+
+> TODO: Make the script work from ~/build
 
 ## Debugging the image
 Debugging the image on Raspberry Pi Zero/Zero W:
@@ -238,7 +244,7 @@ look at log files, and test some assumptions.
 A further goal is to run an app on the RPI that interacts with the hardware.
 An example is to drive a two-axis, servo-controlled arm.
 For expandability a servo hat was used.
-In any case, the test was to control the servos from a Python program.
+The RPI communicates with the servo hat via I2C.
 
 ### I2C
 The yocto overlays support I2C. The following should be added to ~/build/conf/local.conf:
@@ -261,8 +267,8 @@ dtparam=i2c_arm=on
 
 It seems there's something missing in /etc/init.d, or in /etc/modprobe.d, or in thr udev configuration.
 
-> Other sources say add ``i2c_dev`` to /etc/modules. because i2c is not in the device tree, unlike SPI.
-> But that doesn't work and the /etc/modules file gets deleted or borked at bootup.
+The solution is to  add ``i2c_dev`` to /etc/modules. because i2c is not in the device tree, unlike SPI.
+This is taken care of by the sd card script, but ought to be in a Yocto recipe.
 
 ## Loose ends
 Some things left to explore:
@@ -270,6 +276,7 @@ Some things left to explore:
 - ``RPI_USE_UBOOT``
 - remove dtoverlay=dwc2 from config.txt
 - test VM and tooling on Mac
+- be able to access the Pi Zero W as a Bluetooth peripheral
 
 ## About the host platform
 This project was developed and testing on the following platform:

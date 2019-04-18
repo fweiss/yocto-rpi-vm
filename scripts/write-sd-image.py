@@ -3,6 +3,7 @@
 #  burn an sd card with the RPI image after 'bitbake core-image-base'
 
 # TODO run the whole script as sudo to avoid the embedded sudo and allow use of shutil
+# TODO use the rpi-sdimg with dd?
 
 import os
 import sys
@@ -29,7 +30,7 @@ def main():
         print("starting write of image {}".format(MACHINE))
         
         on_mount(partition(1), format_vfat, [ copy_boot_files, copy_kernel_image, copy_overlays, copy_custom_boot_files ])
-        on_mount(partition(2), format_ext4, [ copy_rootfs ])
+        on_mount(partition(2), format_ext4, [ copy_rootfs, copy_etc_modules ])
         
         print("finished write of image {}".format(MACHINE))
         
@@ -128,6 +129,12 @@ def copy_rootfs():
     print("copying rootfs")
     args = [ "sudo", "tar", "--numeric-owner", "-C", MOUNT_DIR, "-xjf", ROOTFS_PATH ]
     run_and_check(args, "could not copy rootfs")
+
+def copy_etc_modules():
+    # insert the i2c module to make /dev/i2c-1
+    print("copying /etc/modules")
+    args = [ "sudo", "cp", "/vagrant/root/etc/modules", "{}/etc/modules".format(MOUNT_DIR)]
+    run_and_check(args, "could not copy /etc/modules")
 
 ############## file system mount wrapper
 
