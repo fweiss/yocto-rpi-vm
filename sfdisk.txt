@@ -1,0 +1,21 @@
+# bare card: """
+label: dos
+label-id: 0x00000000
+device: /dev/sdf
+unit: sectors
+
+/dev/sdf1 : start=        8192, size=    30588928, type=c
+"""
+
+/dev/sdf1        8192 30597119 30588928 14.6G  c W95 FAT32 (LBA)
+
+jessie
+
+    command = """label: dos
+label-id: 0x03e791ca
+device: /dev/sdf
+unit: sectors
+
+/dev/sdf1 : start=        8192, size=       89854, type=c
+/dev/sdf2 : start=       98304, size=    30154752, type=83"""
+
