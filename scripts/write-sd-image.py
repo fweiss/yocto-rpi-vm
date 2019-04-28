@@ -10,7 +10,7 @@ import sys
 import subprocess
 import glob
 
-MACHINE = "raspberrypi0"
+MACHINE = "raspberrypi0-wifi"
 PACKAGE = "core-image-base"
 
 MOUNT_DIR = "/media/card"
@@ -109,9 +109,10 @@ def copy_overlays():
     print("copying device tree overlays")
     args = [ "sudo", "mkdir", "{}/overlays".format(MOUNT_DIR) ]
     run_and_check(args, "could not mkdir 'overlays'")
-    dtbos = glob.glob("./raspberrypi0/*raspberrypi0.dtbo")
+    dtbos = glob.glob("./{}/*{}.dtbo".format(MACHINE, MACHINE))
     for dtbo in dtbos:
-        bare_dtbo = dtbo.replace("-{}".format(MACHINE), "").replace("/raspberrypi0/", "/")
+        # strip machine name from destination filenames
+        bare_dtbo = dtbo.replace("-{}".format(MACHINE), "").replace("/{}/".format(MACHINE), "/")
         args = [ "sudo", "cp", dtbo, "{}/overlays/{}".format(MOUNT_DIR, bare_dtbo) ]
         run_and_check(args, "could not copy {}".format(dtbo))
     dtbs = [ "bcm2708-rpi-0-w.dtb", "bcm2708-rpi-b.dtb", "bcm2708-rpi-b-plus.dtb", "bcm2708-rpi-cm.dtb" ]
@@ -131,6 +132,7 @@ def copy_rootfs():
     run_and_check(args, "could not copy rootfs")
 
 def copy_etc_modules():
+    return
     # insert the i2c module to make /dev/i2c-1
     print("copying /etc/modules")
     args = [ "sudo", "cp", "/vagrant/root/etc/modules", "{}/etc/modules".format(MOUNT_DIR)]
