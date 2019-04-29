@@ -132,11 +132,13 @@ def copy_rootfs():
     run_and_check(args, "could not copy rootfs")
 
 def copy_etc_modules():
-    return
     # insert the i2c module to make /dev/i2c-1
     print("copying /etc/modules")
     args = [ "sudo", "cp", "/vagrant/root/etc/modules", "{}/etc/modules".format(MOUNT_DIR)]
     run_and_check(args, "could not copy /etc/modules")
+    # N.B. prevent the file from getting zeroed during boot
+    args = [ "sudo", "chmod", "400", "{}/etc/modules".format(MOUNT_DIR)]
+    run_and_check(args, "could not chmod /etc/modules")
 
 ############## file system mount wrapper
 
