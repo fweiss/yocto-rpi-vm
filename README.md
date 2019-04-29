@@ -300,6 +300,10 @@ On this platform, the build took about 2 hr 45 min.
 ## About Raspberry Pi Zero W
 The MCU is marked Elpida B4432BBPA. Supposed to be BCM2835?
 
+ARM1176JZF-S
+
+BCM43438/CYW43438 radio, connected via SDIO
+
 ## Links and references
 
 https://www.yoctoproject.org/
@@ -321,4 +325,7 @@ https://elinux.org/Bitbake_Cheat_Sheet
 https://www.virtualbox.org/wiki/Downloads
 
 [Detailed description of RPI Device Trees and Overlays](https://www.raspberrypi.org/documentation/configuration/device-tree.md)
+
+https://github.com/raspberrypi/linux/tree/rpi-4.14.y/drivers/net/wireless/broadcom/b43
+
 
