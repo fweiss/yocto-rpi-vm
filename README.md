@@ -56,11 +56,13 @@ The yocto build environment will be setup in the VM as follows:
 
 Run ``source /vagrant/scripts/setup-yocto.sh``
 
+Building the image will take place in the build directory. The sources directory is only used to update the yocto tool chain.
+
 ## Building the image
 Before building the image with the "bitbake" command, check the build parameters.
 
-- conf/bblayers.conf - specifies the modules that will go into the image
-- conf/local.conf - has the desired machine, e.g. "raspberrypi0"
+- build/conf/bblayers.conf - specifies the modules that will go into the image
+- buikd/conf/local.conf - has the desired machine, e.g. "raspberrypi0"
 
 The conf/local.conf file should have:
 
@@ -68,8 +70,13 @@ The conf/local.conf file should have:
 MACHINE ?= "raspberrypi0
 ENABLE_I2C = "1"
 ```
+> Machine can also be "raspberrypi-wifi" for use with RPIWZ.
 
-Run ``bitbake core-image-base``
+Setup the build environment by running ``source sources/poky/oe-init-build-env``.
+
+> This will change the current directory to "build".
+
+Then run ``bitbake core-image-base``
 
 The first time you run bitbake, it will take several hours. It has to do the following:
 
@@ -158,7 +165,7 @@ flask-image: console-basic-image
 ### Config
 ~/rpi/build/conf/local.conf
 
-## Access SD Card via VirtualBox on Windows
+## Windows access SD Card via VirtualBox
 There's some setup required to be able to access the SD Card from the VM.
 Once this is done, you'll be able to see the inserted SD Card inside the VM with the ``lsblk`` command.
 
