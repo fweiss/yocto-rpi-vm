@@ -121,15 +121,9 @@ This step prepares an SD Card that the RPI can boot.
 
 > Look at the source code for an overview of what it does.
 
-First change the current directory to the images directory
-
-``cd /build/tmp/deploy/images``
-
 Run ``/vagrant/scripts/write-sd-image.py``
 
 When the process is successful, you should see a message like "Finished write of image raspberrypi0".
-
-> TODO: Make the script work from ~/build
 
 ## Debugging the image
 Debugging the image on Raspberry Pi Zero/Zero W:
