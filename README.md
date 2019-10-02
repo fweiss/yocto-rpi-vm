@@ -125,6 +125,24 @@ Run ``/vagrant/scripts/write-sd-image.py``
 
 When the process is successful, you should see a message like "Finished write of image raspberrypi0".
 
+## Access the RPI via ssh over USB
+After inserting the SD card into the Raspberry Pi Zero W and booting, you should be able to get a remote shell.
+
+Connect a USB cable between your desktop or laptop and the Raspberry Pi Zero W.
+
+On Mac/Linux, start the remote shell with this command:
+
+``ssh root@raspberrypi0-wifi.local``
+
+On Windows, start the remote shell with this command:
+
+``putty root@raspberrypi0-wifi.local``
+
+You can of course also use the other related ssh commands to perform file copy and remote exec.
+On Mac, there's even a way to mount a remote directory over ssh. This can be very handy when you have
+an RPI application that you are developing. You can edit the application with
+an IDE and SCM using the full resources of your desktop or laptop.
+
 ## Debugging the image
 Debugging the image on Raspberry Pi Zero/Zero W:
 
