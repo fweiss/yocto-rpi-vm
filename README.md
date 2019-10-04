@@ -290,6 +290,15 @@ It seems there's something missing in /etc/init.d, or in /etc/modprobe.d, or in 
 The solution is to  add ``i2c_dev`` to /etc/modules. because i2c is not in the device tree, unlike SPI.
 This is taken care of by the sd card script, but ought to be in a Yocto recipe.
 
+The /dev/i2c-1 file exists, but its permissions are ``600 root root``. Need to create an "i2c" group so that a 
+non-root process can access it.
+
+- create i2c group
+- add udev rule to set the group and permissions on /dev/i2c-1 (see below)
+- add any application users (such as "pi" or "rover") to the i2c group)
+
+The udev rule can be created along the lines of ``echo 'KERNEL=="i2c-[0-9]*", GROUP="i2c"' >> /etc/udev/rules.d/10-local_i2c_group.rules``
+
 ## Loose ends
 Some things left to explore:
 
