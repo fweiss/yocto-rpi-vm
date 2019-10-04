@@ -4,8 +4,9 @@ Learning how to build an embedded Linux image for Raspberry Pi
 
 ## Goals
 - create a bootable SD card for Raspberry Pi Zero W from scratch
+- no GUI, no manual package installation on the RPI
 - be able to ssh into the RPI easily via USB (no wifi setup)
-- find or create a simple Yocto recipe
+- use a simple Yocto recipe to create the SD card
 - use a VM to run Yocto
 - be able to run Yocto in VM on Windows host
 - be able to write SD card image on Windows from VM
@@ -13,12 +14,12 @@ Learning how to build an embedded Linux image for Raspberry Pi
 Maybe learn about device drivers.
 
 ## Prerequisites
-You'll need the following applications installed to use this project:
+The following applications need to be installed to use this project:
 
 - [VirtualBox](https://www.virtualbox.org) - a free, widely used hypervisor
 - [Vagrant](https://www.vagrantup.com) - a free tool for building and configuring VMs
 
-You'l also need:
+The following hardware is required:
 
 - a Raspberry Pi, preferably a Zero or Zero W
 - host machine with SD Card reader
