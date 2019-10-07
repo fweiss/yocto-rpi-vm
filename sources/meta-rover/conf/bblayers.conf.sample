@@ -1,0 +1,24 @@
+# POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+POKY_BBLAYERS_CONF_VERSION = "2"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+
+BBLAYERS ?= " \
+  /home/vagrant/sources/poky/meta \
+  /home/vagrant/sources/poky/meta-poky \
+  /home/vagrant/sources/poky/meta-yocto-bsp \
+  /home/vagrant/sources/meta-openembedded/meta-oe \
+  /home/vagrant/sources/meta-openembedded/meta-multimedia \
+  /home/vagrant/sources/meta-openembedded/meta-networking \
+  /home/vagrant/sources/meta-openembedded/meta-python \
+  /home/vagrant/sources/meta-raspberrypi \
+  "
+
+# we want to ssh via usb/ethernet gadget, and sftp, and python3
+IMAGE_INSTALL_append = " dropbear openssh-sftp-server usbinit python3 python3-dbus python3-pygobject python3-pybluez \
+   pi-bluetooth python3-smbus bluez-utils"
+
+# python3-pygattlib
+  

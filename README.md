@@ -55,7 +55,12 @@ The yocto build environment will be setup in the VM as follows:
 - /home/vagrant/source - the yocto source and layers
 - /home/vagrant/build - the build workspace
 
-Run ``source /vagrant/scripts/setup-yocto.sh``
+Run the following:
+
+```
+cd /vagrant
+TEMPLATECONF=/vagrant/sources/meta-rover/conf source /vagrant/scripts/setup-yocto.sh
+```
 
 Building the image will take place in the build directory. The sources directory is only used to update the yocto tool chain.
 
