@@ -59,8 +59,9 @@ Run the following:
 
 ```
 cd /vagrant
-TEMPLATECONF=/vagrant/sources/meta-rover/conf source /vagrant/scripts/setup-yocto.sh
+TEMPLATECONF=/vagrant/sources/meta-rover/conf source /vagrant/sources/poky/oe-init-build-env ~/rover-build
 ```
+> Since switching to git submodules, the setup-yocto.sh script is no longer needed.
 
 Building the image will take place in the build directory. The sources directory is only used to update the yocto tool chain.
 
