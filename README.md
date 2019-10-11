@@ -45,7 +45,10 @@ The Vagrant file specifies:
 The Vagrant file and the Chef cookbook may be be modified to suit the circumstances.
 
 ### Creating and accessing the VM
-Run ``vagrant up`` to create and provision the VM. This may take several minutes and requires an internet connection.
+
+> Run vagrant box update to make sure the vm image is up to date
+
+Run ``vagrant up`` to create and provision the VM. This requires an internet connection and may take several minutes.
 
 Run ``vagrant ssh`` to access a shell on the VM. You will run the Yocto build and SD Card utilities from this shell.
 
@@ -58,8 +61,7 @@ The yocto build environment will be setup in the VM as follows:
 Run the following:
 
 ```
-cd /vagrant
-TEMPLATECONF=/vagrant/sources/meta-rover/conf source /vagrant/sources/poky/oe-init-build-env ~/rover-build
+TEMPLATECONF=/vagrant/sources/meta-rover/conf source /vagrant/sources/poky/oe-init-build-env build-rover
 ```
 > Since switching to git submodules, the setup-yocto.sh script is no longer needed.
 
