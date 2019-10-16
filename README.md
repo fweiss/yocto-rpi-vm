@@ -155,12 +155,12 @@ an IDE and SCM using the full resources of your desktop or laptop.
 ## Debugging the image
 Debugging the image on Raspberry Pi Zero/Zero W:
 
-- use a monitor with switchable HDMI input
-- HDMI - HDMI mini cable or adapter
-- USB micro to USB A adapter to connect extra keyboard
+- use a monitor with HDMI input, use an HDMI mini cable or adapter
+- USB micro to USB A adapter to connect USB keyboard
 - power via the power USB micro connector
+- for RPI GUI, add a mouse with a cheap USB hub and Micro-USB adator
 
-- LED flashes seven times, indicating missing kernel.img
+> When LED flashes seven times, that indicates missing kernel.img
 
 ## About bitbake
 Target image bb files are in rpi/meta-rpi/images.
@@ -199,6 +199,8 @@ Once this is done, you'll be able to see the inserted SD Card inside the VM with
 - Install the VirtualBox Extension Pack
 - Restart VM
 
+> Only needs to be done once after VirtualBox is installed.
+
 ### Enable USB in VM settings
 
 - Halt the VM
@@ -206,6 +208,8 @@ Once this is done, you'll be able to see the inserted SD Card inside the VM with
 - Add a USB filter, there will be a drop down showing the available host USB devices
 - Start the VM
 - Wait a while, and the SD card will appear with ``lsblk`` in the VM
+
+> Only needs to be done when a new VM is created with Vagrant.
 
 > Note: the following was useful. It required running cmd and VBox as admin, but still access errors. 
 > https://scribles.net/accessing-sd-card-from-linux-virtualbox-guest-on-windows-host/
