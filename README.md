@@ -279,6 +279,13 @@ Some things left to explore:
 - test VM and tooling on Mac
 - be able to access the Pi Zero W as a Bluetooth peripheral
 
+## Related projects
+This yocto-rpi-vm project only builds an embedded linux image for the Raspberry Pi suitable for adding
+an embedded application.
+
+I have a fledging robotic application which I plan to run. The main focus would be to control the 
+two-axis servo arm from a smart phone via bluetooth.
+
 ## About the host platform
 This project was developed and testing on the following platform:
 
