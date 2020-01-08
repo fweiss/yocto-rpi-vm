@@ -147,10 +147,15 @@ On Windows, start the remote shell with this command:
 
 ``putty root@raspberrypi0-wifi.local``
 
-You can of course also use the other related ssh commands to perform file copy and remote exec.
+Tips:
+- on the RPI0, plug micro USB into the USB, not the PWR IN connector
+- wait for the OS to finish boot - the green LED should flicker and then go solid
+- you may need to clear the RSA fingerprint from ~/.shh/known_hosts
+
+You can of course use the other related ssh commands to perform file copy and remote exec.
 On Mac, there's even a way to mount a remote directory over ssh. This can be very handy when you have
-an RPI application that you are developing. You can edit the application with
-an IDE and SCM using the full resources of your desktop or laptop.
+an RPI application that you are developing. You can edit the application on your host computer with
+an IDE and SCM using the full resources of your host.
 
 ## Debugging the image
 Debugging the image on Raspberry Pi Zero/Zero W:
