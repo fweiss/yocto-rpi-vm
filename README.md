@@ -4,8 +4,9 @@ Learning how to build an embedded Linux image for Raspberry Pi
 
 ## Goals
 - create a bootable SD card for Raspberry Pi Zero W from scratch
+- no GUI, no manual package installation on the RPI
 - be able to ssh into the RPI easily via USB (no wifi setup)
-- find or create a simple Yocto recipe
+- use a simple Yocto recipe to create the SD card
 - use a VM to run Yocto
 - be able to run Yocto in VM on Windows host
 - be able to write SD card image on Windows from VM
@@ -13,12 +14,12 @@ Learning how to build an embedded Linux image for Raspberry Pi
 Maybe learn about device drivers.
 
 ## Prerequisites
-You'll need the following applications installed to use this project:
+The following applications need to be installed to use this project:
 
 - [VirtualBox](https://www.virtualbox.org) - a free, widely used hypervisor
 - [Vagrant](https://www.vagrantup.com) - a free tool for building and configuring VMs
 
-You'l also need:
+The following hardware is required:
 
 - a Raspberry Pi, preferably a Zero or Zero W
 - host machine with SD Card reader
@@ -44,7 +45,10 @@ The Vagrant file specifies:
 The Vagrant file and the Chef cookbook may be be modified to suit the circumstances.
 
 ### Creating and accessing the VM
-Run ``vagrant up`` to create and provision the VM. This may take several minutes and requires an internet connection.
+
+> Run vagrant box update to make sure the vm image is up to date
+
+Run ``vagrant up`` to create and provision the VM. This requires an internet connection and may take several minutes.
 
 Run ``vagrant ssh`` to access a shell on the VM. You will run the Yocto build and SD Card utilities from this shell.
 
@@ -54,7 +58,12 @@ The yocto build environment will be setup in the VM as follows:
 - /home/vagrant/source - the yocto source and layers
 - /home/vagrant/build - the build workspace
 
-Run ``source /vagrant/scripts/setup-yocto.sh``
+Run the following:
+
+```
+TEMPLATECONF=/vagrant/sources/meta-rover/conf source /vagrant/sources/poky/oe-init-build-env build-rover
+```
+> Since switching to git submodules, the setup-yocto.sh script is no longer needed.
 
 Building the image will take place in the build directory. The sources directory is only used to update the yocto tool chain.
 
@@ -125,15 +134,33 @@ Run ``/vagrant/scripts/write-sd-image.py``
 
 When the process is successful, you should see a message like "Finished write of image raspberrypi0".
 
+## Access the RPI via ssh over USB
+After inserting the SD card into the Raspberry Pi Zero W and booting, you should be able to get a remote shell.
+
+Connect a USB cable between your desktop or laptop and the Raspberry Pi Zero W.
+
+On Mac/Linux, start the remote shell with this command:
+
+``ssh root@raspberrypi0-wifi.local``
+
+On Windows, start the remote shell with this command:
+
+``putty root@raspberrypi0-wifi.local``
+
+You can of course also use the other related ssh commands to perform file copy and remote exec.
+On Mac, there's even a way to mount a remote directory over ssh. This can be very handy when you have
+an RPI application that you are developing. You can edit the application with
+an IDE and SCM using the full resources of your desktop or laptop.
+
 ## Debugging the image
 Debugging the image on Raspberry Pi Zero/Zero W:
 
-- use a monitor with switchable HDMI input
-- HDMI - HDMI mini cable or adapter
-- USB micro to USB A adapter to connect extra keyboard
+- use a monitor with HDMI input, use an HDMI mini cable or adapter
+- USB micro to USB A adapter to connect USB keyboard
 - power via the power USB micro connector
+- for RPI GUI, add a mouse with a cheap USB hub and Micro-USB adator
 
-- LED flashes seven times, indicating missing kernel.img
+> When LED flashes seven times, that indicates missing kernel.img
 
 ## About bitbake
 Target image bb files are in rpi/meta-rpi/images.
@@ -172,6 +199,8 @@ Once this is done, you'll be able to see the inserted SD Card inside the VM with
 - Install the VirtualBox Extension Pack
 - Restart VM
 
+> Only needs to be done once after VirtualBox is installed.
+
 ### Enable USB in VM settings
 
 - Halt the VM
@@ -179,6 +208,8 @@ Once this is done, you'll be able to see the inserted SD Card inside the VM with
 - Add a USB filter, there will be a drop down showing the available host USB devices
 - Start the VM
 - Wait a while, and the SD card will appear with ``lsblk`` in the VM
+
+> Only needs to be done when a new VM is created with Vagrant.
 
 > Note: the following was useful. It required running cmd and VBox as admin, but still access errors. 
 > https://scribles.net/accessing-sd-card-from-linux-virtualbox-guest-on-windows-host/
@@ -270,6 +301,15 @@ It seems there's something missing in /etc/init.d, or in /etc/modprobe.d, or in 
 
 The solution is to  add ``i2c_dev`` to /etc/modules. because i2c is not in the device tree, unlike SPI.
 This is taken care of by the sd card script, but ought to be in a Yocto recipe.
+
+The /dev/i2c-1 file exists, but its permissions are ``600 root root``. Need to create an "i2c" group so that a 
+non-root process can access it.
+
+- create i2c group
+- add udev rule to set the group and permissions on /dev/i2c-1 (see below)
+- add any application users (such as "pi" or "rover") to the i2c group)
+
+The udev rule can be created along the lines of ``echo 'KERNEL=="i2c-[0-9]*", GROUP="i2c"' >> /etc/udev/rules.d/10-local_i2c_group.rules``
 
 ## Loose ends
 Some things left to explore:
