@@ -318,6 +318,7 @@ Some things left to explore:
 - remove dtoverlay=dwc2 from config.txt
 - test VM and tooling on Mac
 - be able to access the Pi Zero W as a Bluetooth peripheral
+- which Ubuntu for VM, 16.04 or 18.04
 
 ## About the host platform
 This project was developed and testing on the following platform:
