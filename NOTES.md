@@ -1,3 +1,10 @@
+List of targets (images):
+
+cd ~/poky
+ls meta*/recipes*/images/*.bb
+
+directory structure:
+
 /home/vagrant/
   build/
   sources/

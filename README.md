@@ -205,12 +205,17 @@ Once this is done, you'll be able to see the inserted SD Card inside the VM with
 - Restart VM
 
 > Only needs to be done once after VirtualBox is installed.
+> If you've upgrdaed vb, update the ext as well, using File > Prefences > Extensions, etc
 
 ### Enable USB in VM settings
 
-- Halt the VM
-- In machine settings, enable USB
-- Add a USB filter, there will be a drop down showing the available host USB devices
+- Halt the VM ``vagrant halt``
+- Open VirtualBox Manager
+- Select the ``yocto-rpi-vm`` VM
+- Select Settings > USB
+- Enable USB Controller
+- Click the "+" tool button
+- Select the host USB device for the CD card reader
 - Start the VM
 - Wait a while, and the SD card will appear with ``lsblk`` in the VM
 
