@@ -55,37 +55,36 @@ Run ``vagrant ssh`` to access a shell on the VM. You will run the Yocto build an
 ## Setting up the yocto build environment
 The yocto build environment will be setup in the VM as follows:
 
-- /home/vagrant/source - the yocto source and layers
-- /home/vagrant/build - the build workspace
+- /vagrant/source - the yocto source and layers
+- /home/vagrant/build-rover - the build workspace
 
-Run the following:
+Run the following to setup the Yocto build environment:
 
 ```
 TEMPLATECONF=/vagrant/sources/meta-rover/conf source /vagrant/sources/poky/oe-init-build-env build-rover
 ```
-> Since switching to git submodules, the setup-yocto.sh script is no longer needed.
 
-Building the image will take place in the build directory. The sources directory is only used to update the yocto tool chain.
+> This will change the current directory to "build".
+
+Building the image will take place in the build-rover directory. 
+The sources directory is only used to update the yocto tool chain.
 
 ## Building the image
 Before building the image with the "bitbake" command, check the build parameters.
 
-- build/conf/bblayers.conf - specifies the modules that will go into the image
-- buikd/conf/local.conf - has the desired machine, e.g. "raspberrypi0"
+- ./conf/bblayers.conf - specifies the modules that will go into the image
+- ./conf/local.conf - has the desired machine, e.g. "raspberrypi0"
 
 The conf/local.conf file should have:
 
 ```
-MACHINE ?= "raspberrypi0
+MACHINE ?= "raspberrypi0-wifi"
 ENABLE_I2C = "1"
 ```
 > Machine can also be "raspberrypi-wifi" for use with RPIWZ.
 
-Setup the build environment by running ``source sources/poky/oe-init-build-env``.
-
-> This will change the current directory to "build".
-
-Then run ``bitbake core-image-base``
+Now run 
+``bitbake core-image-base``
 
 The first time you run bitbake, it will take several hours. It has to do the following:
 
