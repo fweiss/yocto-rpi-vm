@@ -28,6 +28,14 @@ The following hardware is required:
 
 You'll also need a fast internet connection, as there are many downloads.
 
+## Updating Git working tree
+This Git project uses submodules to pull in the Yocto meta projects.
+After you've cloned this project, use the following in bring in the submodules:
+
+``git submodule update --init --recursive``
+
+> You can repeat this later on the bring in subsequent updates to the "meta" projects.
+
 ## Basic VM
 By using a VM, all the required yocto tools are installed and updated.
 No worries about interference with other project toolchains.
@@ -65,6 +73,8 @@ TEMPLATECONF=/vagrant/sources/meta-rover/conf source /vagrant/sources/poky/oe-in
 ```
 
 > This will change the current directory to "build".
+
+> Tip: the template doesn't overwrite existing conf files. You may ned to ``rm build-rover/conf/*``
 
 Building the image will take place in the build-rover directory. 
 The sources directory is only used to update the yocto tool chain.
