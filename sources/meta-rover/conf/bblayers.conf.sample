@@ -10,7 +10,7 @@ BBLAYERS ?= " \
   /vagrant/sources/poky/meta-poky \
   /vagrant/sources/poky/meta-yocto-bsp \
   /vagrant/sources/meta-openembedded/meta-oe \
-#  /vagrant/sources/meta-openembedded/meta-multimedia \
+  /vagrant/sources/meta-openembedded/meta-multimedia \
   /vagrant/sources/meta-openembedded/meta-networking \
   /vagrant/sources/meta-openembedded/meta-python \
   /vagrant/sources/meta-raspberrypi \
