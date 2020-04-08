@@ -1,4 +1,21 @@
+# Bluetooth
+Getting Bluetooth to work
+
 bluez is the standard bluetooth stack for linux
+
+## Post boot wetup
+The following need to be run after boot.
+
+```bash
+/usr/bin/hciattach /dev/serial1 bcm43xx 921600 noflow -
+hciconfig hci0 up
+hciconfig
+```
+The device ``hci0`` should be listed and "UP RUNNING".
+
+> This should be put in the Yoctor recipe.
+
+## Other notes
 
 two kinds of stacks?
 - /dev/rfcomm
