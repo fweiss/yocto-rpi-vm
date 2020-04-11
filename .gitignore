@@ -1,4 +1,8 @@
 .vagrant
 .project
 .pydevproject
+
+.idea
+
+# deprecated
 build/

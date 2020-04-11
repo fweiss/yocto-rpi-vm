@@ -10,9 +10,9 @@ BBLAYERS ?= " \
   /vagrant/sources/poky/meta-poky \
   /vagrant/sources/poky/meta-yocto-bsp \
   /vagrant/sources/meta-openembedded/meta-oe \
-  /vagrant/sources/meta-openembedded/meta-multimedia \
   /vagrant/sources/meta-openembedded/meta-networking \
   /vagrant/sources/meta-openembedded/meta-python \
+  /vagrant/sources/meta-openembedded/meta-gnome \
   /vagrant/sources/meta-raspberrypi \
   /vagrant/sources/meta-rover \
   "
@@ -22,4 +22,8 @@ IMAGE_INSTALL_append = " dropbear openssh-sftp-server usbinit python3 python3-db
    pi-bluetooth python3-smbus "
 
 # python3-pygattlib
+
+# yagni?
+#   /vagrant/sources/meta-openembedded/meta-multimedia
+
   

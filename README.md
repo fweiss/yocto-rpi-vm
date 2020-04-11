@@ -69,7 +69,7 @@ The yocto build environment will be setup in the VM as follows:
 Run the following to setup the Yocto build environment:
 
 ```
-TEMPLATECONF=/vagrant/sources/meta-rover/conf source /vagrant/sources/poky/oe-init-build-env build-rover
+TEMPLATECONF=/vagrant/conf source /vagrant/sources/poky/oe-init-build-env build-rover
 ```
 
 > This will change the current directory to "build".
@@ -395,5 +395,7 @@ https://www.virtualbox.org/wiki/Downloads
 [Detailed description of RPI Device Trees and Overlays](https://www.raspberrypi.org/documentation/configuration/device-tree.md)
 
 https://github.com/raspberrypi/linux/tree/rpi-4.14.y/drivers/net/wireless/broadcom/b43
+
+http://linuxgizmos.com/the-best-way-to-build-with-yocto-project-and-bitbake/
 
 
