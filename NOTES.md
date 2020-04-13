@@ -31,6 +31,12 @@ directory structure:
        conf/
          layer.conf
          
-       
-    
-     
+## Yocto appliance
+There's an appliance that contains a Yocto build system. It's located at:
+
+``./sources/poky/meta/recipes-core/images/build-appliance-image``
+
+## Yocto resources
+
+[Concise description of the Yocto build system](https://www.informit.com/articles/article.aspx?p=2514911)
+         
