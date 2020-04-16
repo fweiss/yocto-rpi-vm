@@ -13,6 +13,24 @@ Note that xterm-mono made vi cursors not work.
 Hypothesis
 - do we really need these?
 - what's wrong with the path?
+- not copied correctly
+
+try manually copying:
+
+```
+cp -r /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0 /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/recipe-sysroot-native
+cp -r /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0 /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib
+mkdir -p /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+```
+
+then 
+
+```
+547b34fba6aa80fd7189c5621/update_pixbuf_cache: 
+cannot create /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/../loaders.cache: 
+Directory nonexis
+tent
+```
 
 ### Do we really need it?
 - look for disable flags
@@ -88,3 +106,93 @@ cannot create /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gn
 Directory nonexistent
 ```
 
+## Redux
+Let's try this again and break it down. It's trying to run ``gdk-pixbuf-query-loaders``
+
+```
+NOTE: Running intercept scripts:
+NOTE: > Executing update_icon_cache intercept ...
+NOTE: Exit code 127. Output:
+/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/intercept_scripts-2ebd9c7b3b38bf73f0a2cb90a178f2fdd4f4ea4547b34fba6aa80fd7189c5621/update_icon_cache: 
+6: 
+/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/intercept_scripts-2ebd9c7b3b38bf73f0a2cb90a178f2fdd4f4ea4547b34fba6aa80fd7189c5621/update_icon_cache: 
+/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/recipe-sysroot-native//gdk-pixbuf-2.0/gdk-pixbuf-query-loaders: 
+not found
+```
+
+The ``update_icon_cache`` is generated and consists of:
+
+```sbtshell
+#!/bin/sh
+
+set -e
+
+# update native pixbuf loaders
+$STAGING_DIR_NATIVE/${libdir_native}/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders --update-cache
+
+for icondir in $D/usr/share/icons/*/ ; do
+    if [ -d $icondir ] ; then
+        gtk-update-icon-cache -fqt  $icondir
+    fi
+done
+```
+
+Whose template is ``.\sources\poky\scripts\postinst-intercepts\update_pixbuf_cache``
+
+So it's expecting the pixbuf application in
+
+``/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/recipe-sysroot-native/``
+
+But it's at
+
+``/usr/lib/x86_64-linux-gnu``
+
+So maybe it got the path wrong, or it's expecting it to have been copied. Or multiarch issue?
+Is gdk-pixbuf-2.0 only used to build or it it also deployed?
+
+In ``update_icon_cache``
+
+``lib_native='''`` this explains the '//' in the bum path.
+
+Hard wiring the path in ``update_icon_cache`` fixes the exec problem, but next is a directory problem:
+
+```sbtshell
+NOTE: > Executing update_pixbuf_cache intercept ...
+NOTE: Exit code 2. Output:
+/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/intercept_scripts-2ebd9c7b3b38bf73f0a2cb90a178f2fdd4f4ea4547b34fba6aa80fd7189c5621/update_pixbuf_cache: 
+8: 
+/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/intercept_scripts-2ebd9c7b3b38bf73f0a2cb90a178f2fdd4f4ea4547b34fba6aa80fd7189c5621/update_pixbuf_cache: 
+cannot create /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/../loaders.cache: 
+Directory nonexistent
+```
+
+So in this case this does exist: ``/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib``
+
+But the directory ``gdk-pixbuf-2.0`` doesn't.
+
+Suspect there's a bad path or a copy/move that's missing or not working.
+
+Doctored up ``update_icon_cache`` with:
+
+```
+cp -r /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0 $STAGING_DIR_NATIVE/${libdir_native}
+mkdir -p /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders
+```
+then
+
+```
+NOTE: Running intercept scripts:
+NOTE: > Executing update_icon_cache intercept ...
+NOTE: ============================/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/recipe-sysroot-native
+Failed to create file '/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache.ICL3I0': Permission denied
+```
+
+## Clean
+Try a dead simple build.
+
+```sbtshell
+source /vagrant/sources/poky/oe-init-build-env build_qemux86
+bitbake core-image-minimal
+```
+
+then out of disk space on / only 64 GB, but hey, was able to build rpi before
