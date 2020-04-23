@@ -14,6 +14,7 @@ Hypothesis
 - do we really need these?
 - what's wrong with the path?
 - not copied correctly
+- bad VM image (bento/ubuntu-16.04)
 
 try manually copying:
 
@@ -196,3 +197,26 @@ bitbake core-image-minimal
 ```
 
 then out of disk space on / only 64 GB, but hey, was able to build rpi before
+
+Fresh VM, then same ``gdk-pixbuf-query-loaders: not found``
+
+Maybe bad VM?
+
+## Bad VM?
+using "bento/ubuntu-16.04" is 64-bit:
+
+``Linux vagrant 4.4.0-173-generic #203-Ubuntu SMP Wed Jan 15 02:55:01 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux``
+
+Let's try 32-bit
+
+then 2 errors
+
+```
+checking target system type... i686-pc-linux-gnu
+configure: error: internal configure error for the platform triplet, please file a bug report
+```
+
+try updating sources
+
+VM seemed to crash
+

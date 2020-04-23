@@ -398,4 +398,7 @@ https://github.com/raspberrypi/linux/tree/rpi-4.14.y/drivers/net/wireless/broadc
 
 http://linuxgizmos.com/the-best-way-to-build-with-yocto-project-and-bitbake/
 
+[Setup with Zeus 3.0.2](https://www.yoctoproject.org/docs/3.0.2/brief-yoctoprojectqs/brief-yoctoprojectqs.html
+)
+
 
