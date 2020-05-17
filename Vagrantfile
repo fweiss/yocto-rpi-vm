@@ -1,7 +1,6 @@
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "ubuntu/xenial32"
-  config.disksize.size = '64GB'
+  config.vm.box = "bento/ubuntu-18.04"
   
   config.vm.provider "virtualbox" do |v|
   	v.memory = 4096
