@@ -128,7 +128,7 @@ This will create two partitions on the SD Card:
 - a smallish 'boot' partition for the bootloader
 - a large 'root' partition for the main file system
 
-Run ``/vagrant/scripts/partition.py``
+Run ``/vagrant/scripts/partition-sd.py``
 
 Create a mount point ``sudo mkdir /media/card``. 
 

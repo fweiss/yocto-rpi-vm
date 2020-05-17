@@ -36,6 +36,7 @@ tent
 ### Do we really need it?
 - look for disable flags
 - try core-image-minimal - nope, still ``gdk-pixbuf-query-loaders: not found``
+- use a headless raspberry pi zero w layer
 
 ### What's wrong with the path?
 
@@ -203,6 +204,11 @@ Fresh VM, then same ``gdk-pixbuf-query-loaders: not found``
 Maybe bad VM?
 
 ## Bad VM?
+- switch to 32 bit Ubuntu
+- use warrior
+- increase disk to 64 GB
+- add additional packages
+
 using "bento/ubuntu-16.04" is 64-bit:
 
 ``Linux vagrant 4.4.0-173-generic #203-Ubuntu SMP Wed Jan 15 02:55:01 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux``
@@ -220,3 +226,115 @@ try updating sources
 
 VM seemed to crash
 
+also
+
+``sudo apt-get install libgdk-pixbuf2.0-0``
+
+or maybe this:
+
+``sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping libsdl1.2-dev xterm make xsltproc docbook-utils fop dblatex xmlto python-git   libxml2-utils language-pack-en live-build rsync``
+
+but that's a lotta SHIT
+
+still fails:
+
+```sbtshell
+NOTE: > Executing update_gtk_immodules_cache intercept ...
+NOTE: > Executing update_pixbuf_cache intercept ...
+NOTE: Exit code 2. Output:
+/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/intercept_scripts-2ebd9c7b3b38bf73f0a2cb90a178f2fdd4f4ea4547b34fba6aa80fd7189c5621/update_pixbuf_cache: 
+8: 
+/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/intercept_scripts-2ebd9c7b3b38bf73f0a2cb90a178f2fdd4f4ea4547b34fba6aa80fd7189c5621/update_pixbuf_cache: 
+cannot create /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/../loaders.cache: 
+Directory nonexistent
+```
+
+```sbtshell
+/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/intercept_scripts-2ebd9c7b3b38bf73f0a2cb90a178f2fdd4f4ea4547b34fba6aa80fd7189c5621/update_pixbuf_cache: 
+line 8: 
+/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/../loaders.cache: 
+No such file or directory
+```
+
+``/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/../loaders.cache`` no such file or directory
+
+``/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache`` no such file or directory
+
+``ls -l /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib`` OK
+
+``mkdir -p /home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders``
+
+but bitbake wipes it out, so need to add it into the recipes somewhere.
+
+``find . -name 'gdk-pixbuf-2.0' -print`` NADA
+
+``find . -name 'gdk-pixbuf-2.0' -print`` -> ``/usr/lib/i386-linux-gnu/gdk-pixbuf-2.0``
+
+So ether bad path or missing copy. Actually, suspect bad path, since the i386 wouldn't work on the RPI
+
+so can this be stripped from the path? ``/home/vagrant/build-rover/tmp/work/raspberrypi0_wifi-poky-linux-gnueabi/core-image-base/1.0-r0/rootfs``
+
+how about here: ``sources/poky/meta/classes/pixbufcache.bbclass:20``
+
+same error, so it's not the exec path, but the data path
+
+may look here: ``/vagrant/sources/poky/scripts/postinst-intercepts/update_pixbuf_cache``
+
+## Smoking gun
+OK, just some brute force commenting out code:
+- update_pixbuf_cache
+- update_icon_cache
+- update_font_chache.
+
+Now  let's find a blank sdcard and see if it works!
+
+## OK, now VM is hanging
+Rebuild VM and bitbake OK
+Vagrant ssh error
+Although, there have been VBManager errors before when trying to destroy...
+
+```
+DEBUG subprocess: Waiting for process to exit. Remaining to timeout: 32000
+DEBUG subprocess: Exit status: 0
+DEBUG virtualbox_6_1:   - [1, "ssh", 2222, 22, "127.0.0.1"]
+ INFO subprocess: Starting process: ["C:\\HashiCorp\\Vagrant\\embedded\\usr\\bin/ssh.EXE"]
+DEBUG subprocess: Selecting on IO
+DEBUG subprocess: stderr: usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] [-B bind_interface]
+           [-b bind_address] [-c cipher_spec] [-D [bind_address:]port]
+           [-E log_file] [-e escape_char] [-F configfile] [-I pkcs11]
+           [-i identity_file] [-J [user@]host[:port]] [-L address]
+           [-l login_name] [-m mac_spec] [-O ctl_cmd] [-o option] [-p port]
+           [-Q query_option] [-R address] [-S ctl_path] [-W host:port]
+           [-w local_tun[:remote_tun]] destination [command]
+DEBUG subprocess: Waiting for process to exit. Remaining to timeout: 32000
+DEBUG subprocess: Exit status: 255
+ INFO ssh: Invoking SSH: 
+C:\HashiCorp\Vagrant\embedded\usr\bin/ssh.EXE [
+"vagrant@127.0.0.1", 
+"-p", "2222", 
+"-o", "LogLevel=FATAL", 
+"-o", "Compression=yes", 
+"-o", "DSAAuthentication=yes", 
+"-o", "IdentitiesOnly=yes", 
+"-o", "StrictHostKeyChecking=no", 
+"-o", "UserKnownHostsFile=/dev/null", 
+"-i", "E:/Projects/RPI/yrv/.vagrant/machines/default/virtualbox/private_key"]
+DEBUG safe_exec: Converting command and arguments to common UTF-8 encoding for exec.
+DEBUG safe_exec: Command: `
+"C:\\HashiCorp\\Vagrant\\embedded\\usr\\bin/ssh.EXE"` Args: `["vagrant@127.0.0.1", "-p", "2222", "-o", "LogLevel=FATAL", "-o", "Compression=yes", "-o", "DSAAuthentication=ye
+s", "-o", "IdentitiesOnly=yes", "-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null", "-i", "E:/Projects/RPI/yrv/.vagrant/machines/default/virtualbox/private_key"]`
+DEBUG safe_exec: Converted - Command: `"C:\\HashiCorp\\Vagrant\\embedded\\usr\\bin/ssh.EXE"` Args: `["vagrant@127.0.0.1", "-p", "2222", "-o", "LogLevel=FATAL", "-o", "Compression=yes", "-o", "DSAAuthe
+ntication=yes", "-o", "IdentitiesOnly=yes", "-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null", "-i", "E:/Projects/RPI/yrv/.vagrant/machines/default/virtualbox/private_key"]`
+```
+
+## Now cannot access the sdcard
+
+try
+sudo apt-get install --reinstall udisks2
+
+Still a bit janky, maybe the OS image (ubuntu/xenial32)
+
+## rootfs untar
+bunch of issues, including read-only file system
+
+## Revert to old OS

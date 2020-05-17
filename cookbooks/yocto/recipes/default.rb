@@ -27,3 +27,6 @@ apt_package 'g++-multilib'
 # to fix update_icon_cache?
 # libgdk-pixbuf2.0-dev
 # 	gir1.2-gdkpixbuf-2.0
+
+# for mounting sd card
+directory '/media/card'
