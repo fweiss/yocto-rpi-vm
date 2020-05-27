@@ -160,5 +160,6 @@ def on_mount(device, format_part, fns):
         args = [ "sudo", "umount", device ]
         run_and_check(args, "could not umount {}".format(device));
 
-main()
+if __name__ == "__main__":
+    main()
     
