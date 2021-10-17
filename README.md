@@ -401,4 +401,17 @@ http://linuxgizmos.com/the-best-way-to-build-with-yocto-project-and-bitbake/
 [Setup with Zeus 3.0.2](https://www.yoctoproject.org/docs/3.0.2/brief-yoctoprojectqs/brief-yoctoprojectqs.html
 )
 
+## Using dunsfell and Ubuntu 20
+https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
 
+"ubuntu-20.04" has not been validated with this version of the build system;
+
+| /home/vagrant/build-rover/tmp/hosttools/ld.bfd: linux-user/syscall.o: in function `do_syscall':
+| /home/vagrant/build-rover/tmp/work/x86_64-linux/qemu-native/3.0.0-r0/qemu-3.0.0/linux-user/syscall.c:8526: undefined reference to `stime'
+| collect2: error: ld returned 1 exit status
+| make[1]: *** [Makefile:199: qemu-i386] Error 1
+| make: *** [Makefile:481: subdir-i386-linux-user] Error 2
+| ERROR: oe_runmake failed
+| WARNING: exit code 1 from a shell command.
+| ERROR: Function failed: do_compile (log file is located at /home/vagrant/build-rover/tmp/work/x86_64-linux/qemu-native/3.0.0-r0/temp/log.do_compile.787083)
+ERROR: Task (virtual:native:/vagrant/sources/poky/meta/recipes-devtools/qemu/qemu_3.0.0.bb:do_compile) failed with exit code '1'

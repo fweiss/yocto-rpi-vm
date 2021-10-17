@@ -1,12 +1,12 @@
 [submodule "sources/poky"]
 	path = sources/poky
 	url = git://git.yoctoproject.org/poky
-	branch = thud
+	branch = dunfell 
 [submodule "sources/meta-openembedded"]
 	path = sources/meta-openembedded
 	url = git://git.openembedded.org/meta-openembedded
-	branch = thud
+	branch = dunfell 
 [submodule "sources/meta-raspberrypi"]
 	path = sources/meta-raspberrypi
 	url = git://git.yoctoproject.org/meta-raspberrypi
-	branch = thud
+	branch = dunfell 
